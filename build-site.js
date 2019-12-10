@@ -68,9 +68,7 @@ async function buildMetaTags(emotion) {
   content="Brook is totally ${emotion}"/>
 
 <meta
-  property="og:image"
-  content="https://brook.is/${emotion}.jpg"/>
-<meta
+  itemprop="image"
   property="og:image:secure_url"
   content="https://brook.is/${emotion}.jpg"/>
 <meta

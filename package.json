@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/brookjordan/brook.is#readme",
   "devDependencies": {
-    "image-size": "^0.8.3"
+    "image-size": "^0.8.3",
+    "jimp": "^0.9.3"
   }
 }

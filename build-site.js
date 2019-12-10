@@ -1,13 +1,15 @@
-let promisify = require('util').promisify;
-let fs = require('fs');
-let path = require('path');
-let imageSize = require('image-size');
-let readdir = promisify(fs.readdir);
-let mkdir = promisify(fs.mkdir);
-let exists = promisify(fs.exists);
-let writeFile = promisify(fs.writeFile);
+const promisify = require("util").promisify;
+const fs = require("fs");
+const path = require("path");
+const imageSize = require("image-size");
+const readdir = promisify(fs.readdir);
+const mkdir = promisify(fs.mkdir);
+const exists = promisify(fs.exists);
+const writeFile = promisify(fs.writeFile);
+const readFile = promisify(fs.readFile);
+const jimp = require("jimp")
 
-let imageSizes = {};
+const imageSizes = {};
 
 async function getImageSize(emotion) {
   // { width, height }
@@ -27,7 +29,7 @@ async function getImageSize(emotion) {
 }
 
 async function buildOembedJSON(emotion) {
-  let { width, height } = await getImageSize(emotion);
+  const { width, height } = await getImageSize(emotion);
   return JSON.stringify({
     width,
     height,
@@ -44,7 +46,7 @@ async function buildOembedJSON(emotion) {
 }
 
 async function buildMetaTags(emotion) {
-  let { width, height } = await getImageSize(emotion);
+  const { width, height } = await getImageSize(emotion);
   return `<title>${emotion.slice(0,1).toUpperCase() + emotion.slice(1)}</title>
 <meta name="description" content="Brook is totally ${emotion}">
 
@@ -70,6 +72,15 @@ async function buildMetaTags(emotion) {
   property="og:image:alt"
   content="Brook is ${emotion}"/>
 <meta
+  property="og:image"
+  content="https://brook.is/${emotion}.jpg"/>
+<meta
+  property="og:image:secure_url"
+  content="https://brook.is/${emotion}.jpg"/>
+<meta
+  property="og:image:alt"
+  content="Brook is ${emotion}"/>
+<meta
   property="og:image:width"
   content="${width}"/>
 <meta
@@ -88,7 +99,7 @@ async function buildMetaTags(emotion) {
 }
 
 async function buildPageHTML(emotion) {
-  let metaTags = await buildMetaTags(emotion);
+  const metaTags = await buildMetaTags(emotion);
   return `${metaTags}
 
 <style>
@@ -110,23 +121,33 @@ async function buildPageHTML(emotion) {
 }
 
 async function buildWebSite() {
-  let rootFiles = await readdir(__dirname);
-  let gifs = rootFiles.filter(fileName => fileName.endsWith('.gif'));
+  const rootFiles = await readdir(__dirname);
+  const gifs = rootFiles.filter(fileName => fileName.endsWith(".gif"));
 
   gifs.forEach(async fileName => {
-    let emotion = fileName.slice(0, -4);
+    const emotion = fileName.slice(0, -4);
     if (!await exists(path.join(__dirname, emotion))) {
       await mkdir(path.join(__dirname, emotion));
     }
+
     await Promise.all([
-      buildPageHTML(emotion)
-      .then(pageHTML => {
-        return writeFile(path.join(__dirname, emotion, 'index.html'), pageHTML);
+      jimp.read(path.join(__dirname, `${emotion}.gif`))
+      .then(gifImage => {
+        return gifImage
+          .quality(80)
+          .write(`${emotion}.jpg`);
       })
       .catch(error => { console.log(error); }),
+
+      buildPageHTML(emotion)
+      .then(pageHTML => {
+        return writeFile(path.join(__dirname, emotion, "index.html"), pageHTML);
+      })
+      .catch(error => { console.log(error); }),
+
       buildOembedJSON(emotion)
       .then(pageOembedJSON => {
-        return writeFile(path.join(__dirname, emotion, 'oembed.json'), pageOembedJSON);
+        return writeFile(path.join(__dirname, emotion, "oembed.json"), pageOembedJSON);
       })
       .catch(error => { console.log(error); }),
     ]);
@@ -134,6 +155,10 @@ async function buildWebSite() {
 }
 
 (async function() {
-  await buildWebSite();
-  console.log('site built');
+  try {
+    await buildWebSite();
+    console.log("site built");
+  } catch (error) {
+    console.log(error);
+  }
 }());

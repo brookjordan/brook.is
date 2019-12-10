@@ -144,7 +144,7 @@ async function buildPageHTML(emotion) {
     height: 100%;
   }
   body {
-    background-image: url("/${emotion}.gif);
+    background-image: url("/${emotion}.gif");
     background-size: cover;
   }
 </style>`

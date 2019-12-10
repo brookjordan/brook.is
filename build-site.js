@@ -134,7 +134,17 @@ async function buildMetaTags(emotion) {
   type="application/json+oembed"
   href="https://brook.is/${emotion}/oembed.json"
   title="Brook is feeling ${emotion}"
-/>`;
+/>
+
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org/",
+  "@type": "ImageObject",
+  "url": "http://brook.is/${emotion}.jpg",
+  "height": ${width},
+  "width": ${height}
+}
+</script>`;
 }
 
 async function buildPageHTML(emotion) {

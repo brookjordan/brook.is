@@ -1,0 +1,22 @@
+{
+  "name": "brook.is",
+  "version": "1.0.0",
+  "description": "Brook feels",
+  "main": "build-site.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brookjordan/brook.is.git"
+  },
+  "author": "brook.dev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brookjordan/brook.is/issues"
+  },
+  "homepage": "https://github.com/brookjordan/brook.is#readme",
+  "devDependencies": {
+    "image-size": "^0.8.3"
+  }
+}

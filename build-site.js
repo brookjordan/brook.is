@@ -151,9 +151,9 @@ async function buildPageHTML(emotion) {
   </head>
 
   <body>
-    <link itemprop="thumbnailUrl" href="https://brook.is/${emotion}.gif">
+    <link itemprop="thumbnailUrl" href="https://brook.is/${emotion}.jpg">
     <span itemprop="thumbnail" itemscope itemtype="http://schema.org/ImageObject">
-      <link itemprop="url" href="https://brook.is/${emotion}.gif">
+      <link itemprop="url" href="https://brook.is/${emotion}.jpg">
     </span>
   </body>`;
 }

@@ -71,7 +71,7 @@ async function buildMetaTags(emotion) {
   content="${new Date().toISOString()}"/>
 
 <meta
-  property="og:image:url"
+  property="og:image"
   content="http://brook.is/${emotion}.gif"/>
 <meta
   property="og:image:secure_url"
@@ -91,7 +91,7 @@ async function buildMetaTags(emotion) {
 
 <meta
   itemprop="image"
-  property="og:image:url"
+  property="og:image"
   content="http://brook.is/${emotion}.jpg"/>
 <meta
   itemprop="image"
@@ -136,17 +136,26 @@ async function buildMetaTags(emotion) {
 
 async function buildPageHTML(emotion) {
   const metaTags = await buildMetaTags(emotion);
-  return `${metaTags}
+  return `<head>
+    ${metaTags}
 
-  <style>
-    body,html {
-      margin: 0;
-      height: 100%;
-    }
-    body {
-      background: 50% 50% / contain url("/${emotion}.gif");
-    }
-  </style>`;
+    <style>
+      body,html {
+        margin: 0;
+        height: 100%;
+      }
+      body {
+        background: 50% 50% / contain url("/${emotion}.gif");
+      }
+    </style>
+  </head>
+
+  <body>
+    <link itemprop="thumbnailUrl" href="https://brook.is/${emotion}.gif">
+    <span itemprop="thumbnail" itemscope itemtype="http://schema.org/ImageObject">
+      <link itemprop="url" href="https://brook.is/${emotion}.gif">
+    </span>
+  </body>`;
 }
 
 async function buildWebSite() {

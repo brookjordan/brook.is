@@ -143,17 +143,11 @@ async function buildPageHTML(emotion) {
     margin: 0;
     height: 100%;
   }
-  img {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
+  body {
+    background-image: url("/${emotion}.gif);
+    background-size: cover;
   }
 </style>
-
-<img src="/${emotion}.gif" alt="Brook is ${emotion}">`;
 }
 
 async function buildWebSite() {

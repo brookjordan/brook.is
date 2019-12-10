@@ -68,7 +68,7 @@ async function buildMetaTags(emotion) {
   content="Brook is totally ${emotion}"/>
 <meta
   property="og:updated_time"
-  content="${new Date()}"/>
+  content="${new Date().toISOString()}"/>
 
 <meta
   itemprop="image"

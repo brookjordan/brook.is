@@ -71,6 +71,29 @@ async function buildMetaTags(emotion) {
   content="${new Date().toISOString()}"/>
 
 <meta
+  property="og:image:url"
+  content="http://brook.is/${emotion}.gif"/>
+<meta
+  property="og:image:secure_url"
+  content="https://brook.is/${emotion}.gif"/>
+<meta
+  property="og:image:type"
+  content="image/gif"/>
+<meta
+  property="og:image:alt"
+  content="Brook is ${emotion}"/>
+<meta
+  property="og:image:width"
+  content="${width}"/>
+<meta
+  property="og:image:height"
+  content="${height}"/>
+
+<meta
+  itemprop="image"
+  property="og:image:url"
+  content="http://brook.is/${emotion}.jpg"/>
+<meta
   itemprop="image"
   property="og:image:secure_url"
   content="https://brook.is/${emotion}.jpg"/>
@@ -110,29 +133,6 @@ async function buildMetaTags(emotion) {
   title="Brook is feeling ${emotion}"
 />`;
 }
-
-/*
-
-<meta
-  property="og:image"
-  content="https://brook.is/${emotion}.gif"/>
-<meta
-  property="og:image:secure_url"
-  content="https://brook.is/${emotion}.gif"/>
-<meta
-  property="og:image:type"
-  content="image/gif"/>
-<meta
-  property="og:image:alt"
-  content="Brook is ${emotion}"/>
-<meta
-  property="og:image:width"
-  content="${width}"/>
-<meta
-  property="og:image:height"
-  content="${height}"/>
-
-*/
 
 async function buildPageHTML(emotion) {
   const metaTags = await buildMetaTags(emotion);

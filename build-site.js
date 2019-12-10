@@ -138,16 +138,15 @@ async function buildPageHTML(emotion) {
   const metaTags = await buildMetaTags(emotion);
   return `${metaTags}
 
-<style>
-  body,html {
-    margin: 0;
-    height: 100%;
-  }
-  body {
-    background-image: url("/${emotion}.gif");
-    background-size: cover;
-  }
-</style>`
+  <style>
+    body,html {
+      margin: 0;
+      height: 100%;
+    }
+    body {
+      background: 50% 50% / contain url("/${emotion}.gif");
+    }
+  </style>`;
 }
 
 async function buildWebSite() {

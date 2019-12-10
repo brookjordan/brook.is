@@ -147,7 +147,7 @@ async function buildPageHTML(emotion) {
     background-image: url("/${emotion}.gif);
     background-size: cover;
   }
-</style>
+</style>`
 }
 
 async function buildWebSite() {

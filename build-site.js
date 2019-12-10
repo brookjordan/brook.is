@@ -50,6 +50,10 @@ async function buildMetaTags(emotion) {
   return `<title>${emotion.slice(0,1).toUpperCase() + emotion.slice(1)}</title>
 <meta name="description" content="Brook is totally ${emotion}">
 
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="brook.is" />
+<meta name="twitter:creator" content="brook.dev" />
+
 <meta
   property="og:url"
   content="https://brook.is/${emotion}/"/>

@@ -68,7 +68,7 @@ async function buildMetaTags(emotion) {
   content="Brook is totally ${emotion}"/>
 <meta
   property="og:updated_time"
-  content="${Math.round(+new Date() / 1000)}"/>
+  content="${new Date()}"/>
 
 <meta
   itemprop="image"

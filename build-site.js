@@ -59,7 +59,7 @@ async function buildMetaTags(emotion) {
   content="https://brook.is/${emotion}/"/>
 <meta
   property="og:type"
-  content="website"/>
+  content="article"/>
 <meta
   property="og:title"
   content="${emotion.slice(0,1).toUpperCase() + emotion.slice(1)}"/>

@@ -63,7 +63,7 @@ async function buildMetaTags(emotion) {
   property="og:description"
   content="Brook is totally ${emotion}"/>
 <meta
-  property="og:image"
+  property="og:image:url"
   content="https://brook.is/${emotion}.gif"/>
 <meta
   property="og:image:secure_url"
@@ -75,7 +75,7 @@ async function buildMetaTags(emotion) {
   property="og:image:alt"
   content="Brook is ${emotion}"/>
 <meta
-  property="og:image"
+  property="og:image:url"
   content="https://brook.is/${emotion}.jpg"/>
 <meta
   property="og:image:secure_url"
@@ -96,8 +96,20 @@ async function buildMetaTags(emotion) {
   property="og:video"
   content="https://brook.is/${emotion}.gif"/>
 <meta
+  property="og:video:url"
+  content="https://brook.is/${emotion}.gif"/>
+<meta
   property="og:video:secure_url"
   content="https://brook.is/${emotion}.gif"/>
+<meta
+  property="og:video:type"
+  content="image/gif"/>
+<meta
+  property="og:video:width"
+  content="${width}"/>
+<meta
+  property="og:video:height"
+  content="${height}"/>
 
 <link
   rel="alternate"

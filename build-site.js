@@ -52,7 +52,7 @@ async function buildMetaTags(emotion) {
 
 <meta
   property="og:url"
-  content="https://brook.is/${emotion}"/>
+  content="https://brook.is/${emotion}/"/>
 <meta
   property="og:type"
   content="website"/>

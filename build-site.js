@@ -55,6 +55,9 @@ async function buildMetaTags(emotion) {
 <meta name="twitter:creator" content="brook.dev" />
 
 <meta
+  property="og:site_name"
+  content="Brook is">
+<meta
   property="og:url"
   content="https://brook.is/${emotion}/"/>
 <meta

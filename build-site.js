@@ -98,7 +98,7 @@ async function buildMetaTags(emotion) {
   content="image/gif"/>
 <meta
   property="og:image:alt"
-  content="Brook is ${emotion}"/>
+  content="Brook is ${randomAdjective()} ${emotion}"/>
 <meta
   property="og:image:width"
   content="${width}"/>
@@ -119,7 +119,7 @@ async function buildMetaTags(emotion) {
   content="image/jpeg"/>
 <meta
   property="og:image:alt"
-  content="Brook is ${emotion}"/>
+  content="Brook is ${randomAdjective()} ${emotion}"/>
 <meta
   property="og:image:width"
   content="${width}"/>
@@ -147,7 +147,7 @@ async function buildMetaTags(emotion) {
   rel="alternate"
   type="application/json+oembed"
   href="https://brook.is/${emotion}/oembed.json"
-  title="Brook is feeling ${emotion}"
+  title="Brook is  ${randomAdjective()} ${emotion}"
 />
 
 <script type="application/ld+json">

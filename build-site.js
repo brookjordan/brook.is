@@ -25,6 +25,10 @@ function randomAdjective() {
   return adjectives[Math.floor(Math.random() * adjectives.length)];
 }
 
+function humanise(str) {
+  return str.replace(/-/g, ' ');
+}
+
 async function getImageSize(emotion) {
   // { width, height }
   if (imageSizes[emotion]) {
@@ -51,7 +55,7 @@ async function buildOembedJSON(emotion) {
 
     version: "1.0",
     type: "photo",
-    title: `Brook is ${randomAdjective()} ${emotion}`,
+    title: `Brook is ${randomAdjective()} ${humanise(emotion)}`,
     author_name: "Brook Jordan",
     author_url: "https://brook.dev/",
     provider_name: "Brook is",
@@ -61,8 +65,8 @@ async function buildOembedJSON(emotion) {
 
 async function buildMetaTags(emotion) {
   const { width, height } = await getImageSize(emotion);
-  return `<title>${emotion.slice(0,1).toUpperCase() + emotion.slice(1)}</title>
-<meta name="description" content="Brook is ${randomAdjective()} ${emotion}">
+  return `<title>${humanise(emotion.slice(0,1).toUpperCase() + emotion.slice(1))}</title>
+<meta name="description" content="Brook is ${randomAdjective()} ${humanise(emotion)}">
 
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:site" content="brook.is" />
@@ -79,10 +83,10 @@ async function buildMetaTags(emotion) {
   content="article"/>
 <meta
   property="og:title"
-  content="${emotion.slice(0,1).toUpperCase() + emotion.slice(1)}"/>
+  content="${humanise(emotion.slice(0,1).toUpperCase() + emotion.slice(1))}"/>
 <meta
   property="og:description"
-  content="Brook is ${randomAdjective()} ${emotion}"/>
+  content="Brook is ${randomAdjective()} ${humanise(emotion)}"/>
 <meta
   property="og:updated_time"
   content="${new Date().toISOString()}"/>
@@ -98,7 +102,7 @@ async function buildMetaTags(emotion) {
   content="image/gif"/>
 <meta
   property="og:image:alt"
-  content="Brook is ${randomAdjective()} ${emotion}"/>
+  content="Brook is ${randomAdjective()} ${humanise(emotion)}"/>
 <meta
   property="og:image:width"
   content="${width}"/>
@@ -119,7 +123,7 @@ async function buildMetaTags(emotion) {
   content="image/jpeg"/>
 <meta
   property="og:image:alt"
-  content="Brook is ${randomAdjective()} ${emotion}"/>
+  content="Brook is ${randomAdjective()} ${humanise(emotion)}"/>
 <meta
   property="og:image:width"
   content="${width}"/>
@@ -147,7 +151,7 @@ async function buildMetaTags(emotion) {
   rel="alternate"
   type="application/json+oembed"
   href="https://brook.is/${emotion}/oembed.json"
-  title="Brook is  ${randomAdjective()} ${emotion}"
+  title="Brook is  ${randomAdjective()} ${humanise(emotion)}"
 />
 
 <script type="application/ld+json">

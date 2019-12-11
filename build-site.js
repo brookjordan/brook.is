@@ -95,11 +95,11 @@ async function buildMetaTags(emotion) {
 <meta
   itemprop="image"
   property="og:image"
-  content="http://brook.is/${emotion}.jpg"/>
+  content="http://brook.is/static/${emotion}.jpg"/>
 <meta
   itemprop="image"
   property="og:image:secure_url"
-  content="https://brook.is/${emotion}.jpg"/>
+  content="https://brook.is/static/${emotion}.jpg"/>
 <meta
   property="og:image:type"
   content="image/jpeg"/>
@@ -140,7 +140,7 @@ async function buildMetaTags(emotion) {
 {
   "@context": "http://schema.org/",
   "@type": "ImageObject",
-  "url": "http://brook.is/${emotion}.jpg",
+  "url": "http://brook.is/static/${emotion}.jpg",
   "height": ${width},
   "width": ${height}
 }
@@ -164,9 +164,9 @@ async function buildPageHTML(emotion) {
   </head>
 
   <body>
-    <link itemprop="thumbnailUrl" href="https://brook.is/${emotion}.jpg">
+    <link itemprop="thumbnailUrl" href="https://brook.is/static/${emotion}.jpg">
     <span itemprop="thumbnail" itemscope itemtype="http://schema.org/ImageObject">
-      <link itemprop="url" href="https://brook.is/${emotion}.jpg">
+      <link itemprop="url" href="https://brook.is/static/${emotion}.jpg">
     </span>
   </body>`;
 }
@@ -186,7 +186,7 @@ async function buildWebSite() {
       .then(gifImage => {
         return gifImage
           .quality(80)
-          .write(`${emotion}.jpg`);
+          .write(`static/${emotion}.jpg`);
       })
       .catch(error => { console.log(error); }),
 

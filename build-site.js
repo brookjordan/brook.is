@@ -170,9 +170,10 @@ async function buildPageHTML(emotion) {
       body,html {
         margin: 0;
         height: 100%;
+        background: no-repeat 50% 50% / cover url("/${emotion}.gif");
       }
       body {
-        background: 50% 50% / contain url("/${emotion}.gif");
+        background-size: contain;
       }
     </style>
   </head>

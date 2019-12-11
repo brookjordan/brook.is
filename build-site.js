@@ -9,11 +9,13 @@ const writeFile = promisify(fs.writeFile);
 const jimp = require("jimp")
 
 const adjectives = [
-  'totally',
-  'rather',
+  'damn',
   'super',
   'quite',
+  'rather',
+  'totally',
   'stupidly',
+  'seriouslu',
   'ridiculously',
 ];
 

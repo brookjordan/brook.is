@@ -6,10 +6,22 @@ const readdir = promisify(fs.readdir);
 const mkdir = promisify(fs.mkdir);
 const exists = promisify(fs.exists);
 const writeFile = promisify(fs.writeFile);
-const readFile = promisify(fs.readFile);
 const jimp = require("jimp")
 
+const adjectives = [
+  'totally',
+  'rather',
+  'super',
+  'quite',
+  'stupidly',
+  'ridiculously',
+];
+
 const imageSizes = {};
+
+function randomAdjective() {
+  return adjectives[Math.floor(Math.random() * adjectives.length)];
+}
 
 async function getImageSize(emotion) {
   // { width, height }
@@ -37,7 +49,7 @@ async function buildOembedJSON(emotion) {
 
     version: "1.0",
     type: "photo",
-    title: `Brook is ${emotion}`,
+    title: `Brook is ${randomAdjective()} ${emotion}`,
     author_name: "Brook Jordan",
     author_url: "https://brook.dev/",
     provider_name: "Brook is",
@@ -48,7 +60,7 @@ async function buildOembedJSON(emotion) {
 async function buildMetaTags(emotion) {
   const { width, height } = await getImageSize(emotion);
   return `<title>${emotion.slice(0,1).toUpperCase() + emotion.slice(1)}</title>
-<meta name="description" content="Brook is totally ${emotion}">
+<meta name="description" content="Brook is ${randomAdjective()} ${emotion}">
 
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:site" content="brook.is" />
@@ -68,7 +80,7 @@ async function buildMetaTags(emotion) {
   content="${emotion.slice(0,1).toUpperCase() + emotion.slice(1)}"/>
 <meta
   property="og:description"
-  content="Brook is totally ${emotion}"/>
+  content="Brook is ${randomAdjective()} ${emotion}"/>
 <meta
   property="og:updated_time"
   content="${new Date().toISOString()}"/>

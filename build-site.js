@@ -135,7 +135,7 @@ async function buildMetaTags(emotion) {
   rel="alternate"
   type="application/json+oembed"
   href="https://brook.is/${emotion}/oembed.json"
-  title="Brook is  ${randomAdjective()} ${humanise(emotion)}"
+  title="Brook is ${randomAdjective()} ${humanise(emotion)}"
 />
 
 <script type="application/ld+json">
@@ -158,15 +158,21 @@ async function buildPageHTML(emotion) {
       body,html {
         margin: 0;
         height: 100%;
-        background: no-repeat 50% 50% / cover url("/${emotion}.gif");
       }
       body {
-        background-size: contain;
+        background: no-repeat 50% 50% / cover url("/${emotion}.gif");
+      }
+      img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
       }
     </style>
   </head>
 
   <body>
+    <img src="/${emotion}.gif" alt="Brook is ${randomAdjective()} ${humanise(emotion)}">
     <link itemprop="thumbnailUrl" href="https://brook.is/static/${emotion}.jpg">
     <span itemprop="thumbnail" itemscope itemtype="https://schema.org/ImageObject">
       <link itemprop="url" href="https://brook.is/static/${emotion}.jpg">

@@ -73,6 +73,9 @@ async function buildMetaTags(emotion) {
 <meta name="twitter:creator" content="brook.dev" />
 
 <meta
+  property="fb:app_id"
+  content="1567003380105198"/>
+<meta
   property="og:site_name"
   content="Brook is">
 <meta
@@ -80,7 +83,7 @@ async function buildMetaTags(emotion) {
   content="https://brook.is/${emotion}/"/>
 <meta
   property="og:type"
-  content="article"/>
+  content="website"/>
 <meta
   property="og:title"
   content="${humanise(emotion.slice(0,1).toUpperCase() + emotion.slice(1))}"/>
@@ -92,28 +95,9 @@ async function buildMetaTags(emotion) {
   content="${new Date().toISOString()}"/>
 
 <meta
-  property="og:image"
-  content="http://brook.is/${emotion}.gif"/>
-<meta
-  property="og:image:secure_url"
-  content="https://brook.is/${emotion}.gif"/>
-<meta
-  property="og:image:type"
-  content="image/gif"/>
-<meta
-  property="og:image:alt"
-  content="Brook is ${randomAdjective()} ${humanise(emotion)}"/>
-<meta
-  property="og:image:width"
-  content="${width}"/>
-<meta
-  property="og:image:height"
-  content="${height}"/>
-
-<meta
   itemprop="image"
   property="og:image"
-  content="http://brook.is/static/${emotion}.jpg"/>
+  content="https://brook.is/static/${emotion}.jpg"/>
 <meta
   itemprop="image"
   property="og:image:secure_url"
@@ -156,14 +140,35 @@ async function buildMetaTags(emotion) {
 
 <script type="application/ld+json">
 {
-  "@context": "http://schema.org/",
+  "@context": "https://schema.org/",
   "@type": "ImageObject",
-  "url": "http://brook.is/static/${emotion}.jpg",
+  "url": "https://brook.is/static/${emotion}.jpg",
   "height": ${width},
   "width": ${height}
 }
 </script>`;
 }
+
+/*
+<meta
+  property="og:image"
+  content="https://brook.is/${emotion}.gif"/>
+<meta
+  property="og:image:secure_url"
+  content="https://brook.is/${emotion}.gif"/>
+<meta
+  property="og:image:type"
+  content="image/gif"/>
+<meta
+  property="og:image:alt"
+  content="Brook is ${randomAdjective()} ${humanise(emotion)}"/>
+<meta
+  property="og:image:width"
+  content="${width}"/>
+<meta
+  property="og:image:height"
+  content="${height}"/>
+*/
 
 async function buildPageHTML(emotion) {
   const metaTags = await buildMetaTags(emotion);
@@ -184,7 +189,7 @@ async function buildPageHTML(emotion) {
 
   <body>
     <link itemprop="thumbnailUrl" href="https://brook.is/static/${emotion}.jpg">
-    <span itemprop="thumbnail" itemscope itemtype="http://schema.org/ImageObject">
+    <span itemprop="thumbnail" itemscope itemtype="https://schema.org/ImageObject">
       <link itemprop="url" href="https://brook.is/static/${emotion}.jpg">
     </span>
   </body>`;

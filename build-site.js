@@ -160,7 +160,7 @@ async function buildPageHTML(emotion) {
         height: 100%;
       }
       body {
-        background: no-repeat 50% 50% / cover url("/${emotion}.gif");
+        background: no-repeat 50% 50% / cover url("https://brook.is/static/${emotion}.jpg");
       }
       img {
         display: block;
@@ -172,7 +172,10 @@ async function buildPageHTML(emotion) {
   </head>
 
   <body>
-    <img src="/${emotion}.gif" alt="Brook is ${randomAdjective()} ${humanise(emotion)}">
+    <img
+      src="https://brook.is/${emotion}.gif"
+      alt="Brook is ${randomAdjective()} ${humanise(emotion)}"
+    >
     <link itemprop="thumbnailUrl" href="https://brook.is/static/${emotion}.jpg">
     <span itemprop="thumbnail" itemscope itemtype="https://schema.org/ImageObject">
       <link itemprop="url" href="https://brook.is/static/${emotion}.jpg">

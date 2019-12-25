@@ -15,7 +15,7 @@ const adjectives = [
   'rather',
   'totally',
   'stupidly',
-  'seriouslu',
+  'seriously',
   'ridiculously',
 ];
 
@@ -105,25 +105,6 @@ async function buildMetaTags(emotion) {
 <meta
   property="og:image:type"
   content="image/jpeg"/>
-<meta
-  property="og:image:alt"
-  content="Brook is ${randomAdjective()} ${humanise(emotion)}"/>
-<meta
-  property="og:image:width"
-  content="${width}"/>
-<meta
-  property="og:image:height"
-  content="${height}"/>
-
-<meta
-  property="og:image"
-  content="https://brook.is/${emotion}.gif"/>
-<meta
-  property="og:image:secure_url"
-  content="https://brook.is/${emotion}.gif"/>
-<meta
-  property="og:image:type"
-  content="image/gif"/>
 <meta
   property="og:image:alt"
   content="Brook is ${randomAdjective()} ${humanise(emotion)}"/>

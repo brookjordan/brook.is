@@ -8,22 +8,7 @@ const exists = promisify(fs.exists);
 const writeFile = promisify(fs.writeFile);
 const jimp = require("jimp")
 
-const adjectives = [
-  'damn',
-  'super',
-  'quite',
-  'rather',
-  'totally',
-  'stupidly',
-  'seriously',
-  'ridiculously',
-];
-
 const imageSizes = {};
-
-function randomAdjective() {
-  return adjectives[Math.floor(Math.random() * adjectives.length)];
-}
 
 function humanise(str) {
   return str.replace(/-/g, ' ');
@@ -55,7 +40,7 @@ async function buildOembedJSON(emotion) {
 
     version: "1.0",
     type: "photo",
-    title: `Brook is ${randomAdjective()} ${humanise(emotion)}`,
+    title: `Brook is ${humanise(emotion)}`,
     author_name: "Brook Jordan",
     author_url: "https://brook.dev/",
     provider_name: "Brook is",
@@ -66,7 +51,7 @@ async function buildOembedJSON(emotion) {
 async function buildMetaTags(emotion) {
   const { width, height } = await getImageSize(emotion);
   return `<title>${humanise(emotion.slice(0,1).toUpperCase() + emotion.slice(1))}</title>
-<meta name="description" content="Brook is ${randomAdjective()} ${humanise(emotion)}">
+<meta name="description" content="Brook is ${humanise(emotion)}">
 
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:site" content="brook.is" />
@@ -89,7 +74,7 @@ async function buildMetaTags(emotion) {
   content="${humanise(emotion.slice(0,1).toUpperCase() + emotion.slice(1))}"/>
 <meta
   property="og:description"
-  content="Brook is ${randomAdjective()} ${humanise(emotion)}"/>
+  content="Brook is ${humanise(emotion)}"/>
 <meta
   property="og:updated_time"
   content="${new Date().toISOString()}"/>
@@ -107,7 +92,7 @@ async function buildMetaTags(emotion) {
   content="image/jpeg"/>
 <meta
   property="og:image:alt"
-  content="Brook is ${randomAdjective()} ${humanise(emotion)}"/>
+  content="Brook is ${humanise(emotion)}"/>
 <meta
   property="og:image:width"
   content="${width}"/>
@@ -135,7 +120,7 @@ async function buildMetaTags(emotion) {
   rel="alternate"
   type="application/json+oembed"
   href="https://brook.is/${emotion}/oembed.json"
-  title="Brook is ${randomAdjective()} ${humanise(emotion)}"
+  title="Brook is ${humanise(emotion)}"
 />
 
 <script type="application/ld+json">
@@ -174,7 +159,7 @@ async function buildPageHTML(emotion) {
   <body>
     <img
       src="https://brook.is/${emotion}.gif"
-      alt="Brook is ${randomAdjective()} ${humanise(emotion)}"
+      alt="Brook is ${humanise(emotion)}"
     >
     <link itemprop="thumbnailUrl" href="https://brook.is/static/${emotion}.jpg">
     <span itemprop="thumbnail" itemscope itemtype="https://schema.org/ImageObject">

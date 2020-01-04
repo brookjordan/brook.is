@@ -16,7 +16,9 @@ async function buildWebSite() {
     throw "non-gif-image-error"
   }
 
-  const emotions = gifs.map(fileName => fileName.slice(0, -4));
+  const emotions = gifs
+    .filter(fileName => !/-\d+\.gif$/.test(fileName))
+    .map(fileName => fileName.slice(0, -4));
   let remainingEmotions = emotions.slice(0).reverse();
   return Promise.all(
     childProcesses.map(async childProcess => {

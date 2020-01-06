@@ -1,14 +1,15 @@
+const CHILD_PROCESS_COUNT = process.env.SPAWN_COUNT || 10;
+
 const promisify = require("util").promisify;
 const fs = require("fs");
 const path = require("path");
 const readdir = promisify(fs.readdir);
-const spawnInstance = require('./spawn-instance.js');
+const spawnBashProcess = require("./spawn-bash-process.js");
 
-const CHILD_PROCESS_COUNT = process.env.SPAWN_COUNT || 10;
-const GIF_FOLDER_NAME = '__gifs';
+const GIF_FOLDER_NAME = "__gifs";
 const GIF_FOLDER_PATH = path.join(__dirname, GIF_FOLDER_NAME);
 
-const childProcesses = Array.from({ length: CHILD_PROCESS_COUNT }, () => spawnInstance());
+const childProcesses = Array.from({ length: CHILD_PROCESS_COUNT }, () => spawnBashProcess());
 
 async function buildWebSite() {
   const gifs = await readdir(GIF_FOLDER_PATH);
@@ -24,7 +25,7 @@ async function buildWebSite() {
     childProcesses.map(async childProcess => {
       while (remainingEmotions.length) {
         let emotion = remainingEmotions.pop();
-        await childProcess.run(`EMOTION=${emotion} node build-page.js`);
+        await childProcess.run(`EMOTION=${emotion} GIF_FOLDER_NAME=${GIF_FOLDER_NAME} node build-page.js`);
         console.log(`${emotion} page built…`);
       }
       childProcess.end();

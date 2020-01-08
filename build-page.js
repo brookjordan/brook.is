@@ -26,44 +26,53 @@ const mkdir = promisify(fs.mkdir);
 const exists = promisify(fs.exists);
 const writeFile = promisify(fs.writeFile);
 const jimp = require("jimp");
+const getImageColors = require("get-image-colors");
+const dominantColor = path => getImageColors(path).then(colors => colors[0].css());
 
 const imageSizes = {};
 
-const gifPath = (emotion) => path.join(GIF_FOLDER_PATH, `${emotion}.gif`);
-const folderPath = (emotion) => path.join(__dirname, emotion);
-const gifURL = (emotion) => `${BASE_URL}/${GIF_FOLDER_NAME}/${emotion}.gif`;
-
 const GIF_FOLDER_PATH = path.join(__dirname, GIF_FOLDER_NAME);
 const JPEG_FOLDER_NAME = "_jpegs";
+const JPEG_FOLDER_PATH = path.join(__dirname, JPEG_FOLDER_NAME);
 
+const GIF_PATH = path.join(GIF_FOLDER_PATH, `${EMOTION}.gif`);
+const JPEG_PATH = path.join(JPEG_FOLDER_PATH, `${EMOTION}.jpg`);
+const DIR_PATH = path.join(__dirname, EMOTION);
+const GIF_URL = `${BASE_URL}/${GIF_FOLDER_NAME}/${EMOTION}.gif`;
+const JPEG_URL = `${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg`;
 
-function getImageSize(emotion) {
+const jpegImagePromise = jimp
+  .read(GIF_PATH)
+  .then(gifImage => gifImage.quality(80).write(JPEG_PATH))
+  .catch(error => { console.log(error); });
+
+function getImageSize(EMOTION) {
   // { width, height }
-  if (imageSizes[emotion]) {
-    return imageSizes[emotion];
+  if (imageSizes[EMOTION]) {
+    return imageSizes[EMOTION];
   }
   return new Promise((resolve, reject) => {
-    imageSize(gifPath(emotion), (error, dimensions) => {
+    imageSize(GIF_PATH, (error, dimensions) => {
       if (error) {
         reject(error);
       } else {
-        imageSizes[emotion] = dimensions;
+        imageSizes[EMOTION] = dimensions;
         resolve(dimensions);
       }
     });
   });
 }
 
-async function buildOembedJSON(emotion) {
-  const { width, height } = await getImageSize(emotion);
+async function buildOembedJSON(EMOTION) {
+  const { width, height } = await getImageSize(EMOTION);
   return JSON.stringify({
     width,
     height,
-    url: gifURL(emotion),
+    url: GIF_URL,
 
     version: "1.0",
     type: "photo",
-    title: `Brook is ${emotion.humanised}`,
+    title: `Brook is ${EMOTION.humanised}`,
     author_name: "Brook Jordan",
     author_url: "https://brook.dev/",
     provider_name: "Brook is",
@@ -71,11 +80,11 @@ async function buildOembedJSON(emotion) {
   });
 }
 
-async function buildMetaTags(emotion) {
-  const { width, height } = await getImageSize(emotion);
+async function buildMetaTags(EMOTION) {
+  const { width, height } = await getImageSize(EMOTION);
   return `
-  <title>${emotion.humanised.sentenceCased}</title>
-  <meta name="description" content="Brook is ${emotion.humanised}">
+  <title>${EMOTION.humanised.sentenceCased}</title>
+  <meta name="description" content="Brook is ${EMOTION.humanised}">
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:site" content="brook.is" />
@@ -89,16 +98,16 @@ async function buildMetaTags(emotion) {
     content="Brook is">
   <meta
     property="og:url"
-    content="${BASE_URL}/${emotion}/"/>
+    content="${BASE_URL}/${EMOTION}/"/>
   <meta
     property="og:type"
     content="website"/>
   <meta
     property="og:title"
-    content="${emotion.humanised.sentenceCased}"/>
+    content="${EMOTION.humanised.sentenceCased}"/>
   <meta
     property="og:description"
-    content="Brook is ${emotion.humanised}"/>
+    content="Brook is ${EMOTION.humanised}"/>
   <meta
     property="og:updated_time"
     content="${new Date().toISOString()}"/>
@@ -106,17 +115,17 @@ async function buildMetaTags(emotion) {
   <meta
     itemprop="image"
     property="og:image"
-    content="${BASE_URL}/${JPEG_FOLDER_NAME}/${emotion}.jpg"/>
+    content="${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg"/>
   <meta
     itemprop="image"
     property="og:image:secure_url"
-    content="${BASE_URL}/${JPEG_FOLDER_NAME}/${emotion}.jpg"/>
+    content="${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg"/>
   <meta
     property="og:image:type"
     content="image/jpeg"/>
   <meta
     property="og:image:alt"
-    content="Brook is ${emotion.humanised}"/>
+    content="Brook is ${EMOTION.humanised}"/>
   <meta
     property="og:image:width"
     content="${width}"/>
@@ -126,10 +135,10 @@ async function buildMetaTags(emotion) {
 
   <meta
     property="og:video:url"
-    content="${gifURL(emotion)}"/>
+    content="${GIF_URL}"/>
   <meta
     property="og:video:secure_url"
-    content="${gifURL(emotion)}"/>
+    content="${GIF_URL}"/>
   <meta
     property="og:video:type"
     content="image/gif"/>
@@ -143,23 +152,31 @@ async function buildMetaTags(emotion) {
   <link
     rel="alternate"
     type="application/json+oembed"
-    href="${BASE_URL}/${emotion}/oembed.json"
-    title="Brook is ${emotion.humanised}"
+    href="${BASE_URL}/${EMOTION}/oembed.json"
+    title="Brook is ${EMOTION.humanised}"
   />
 
   <script type="application/ld+json">
   {
     "@context": "https://schema.org/",
     "@type": "ImageObject",
-    "url": "${BASE_URL}/${JPEG_FOLDER_NAME}/${emotion}.jpg",
+    "url": "${JPEG_URL}",
     "height": ${width},
     "width": ${height}
   }
   </script>`;
 }
 
-async function buildPageHTML(emotion) {
-  const metaTags = await buildMetaTags(emotion);
+async function buildPageHTML(EMOTION) {
+  const metaTagsPromise = buildMetaTags(EMOTION);
+  await jpegImagePromise;
+  let [
+    metaTags,
+    backgroundColor,
+  ] = await Promise.all([
+    metaTagsPromise,
+    dominantColor(JPEG_PATH),
+  ]);
   return `
   <head>${metaTags}
     <style>
@@ -167,54 +184,60 @@ async function buildPageHTML(emotion) {
         margin: 0;
         height: 100%;
       }
-      body {
-        background: no-repeat 50% 50% / cover url("${BASE_URL}/${JPEG_FOLDER_NAME}/${emotion}.jpg");
+      html {
+        background-color: ${backgroundColor};
+      }
+      body::before {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 5%;
+        height: 5%;
+        background: 50% 50% / cover url("${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg");
+        filter: blur(0.1vmax);
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(24);
+        will-change: transform;
       }
       img {
+        position: relative;
         display: block;
         width: 100%;
         height: 100%;
         object-fit: contain;
+        will-change: transform;
       }
     </style>
   </head>
 
   <body>
     <img
-      src="${gifURL(emotion)}"
-      alt="Brook is ${emotion.humanised}"
+      src="${GIF_URL}"
+      alt="Brook is ${EMOTION.humanised}"
     >
-    <link itemprop="thumbnailUrl" href="${BASE_URL}/${JPEG_FOLDER_NAME}/${emotion}.jpg">
+    <link itemprop="thumbnailUrl" href="${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg">
     <span itemprop="thumbnail" itemscope itemtype="https://schema.org/ImageObject">
-      <link itemprop="url" href="${BASE_URL}/${JPEG_FOLDER_NAME}/${emotion}.jpg">
+      <link itemprop="url" href="${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg">
     </span>
   </body>`;
 }
 
 (async function() {
-  if (!await exists(folderPath(EMOTION))) {
-    await mkdir(folderPath(EMOTION));
+  if (!await exists(DIR_PATH)) {
+    await mkdir(DIR_PATH);
   }
 
   Promise.all([
-    jimp.read(gifPath(EMOTION))
-      .then(gifImage => {
-        let imageManip = gifImage
-          .quality(80)
-          .write(`${JPEG_FOLDER_NAME}/${EMOTION}.jpg`);
-        //process.send(`static image for ${emotion} done…`);
-        return imageManip;
-      })
-      .catch(error => { console.log(error); }),
+    jpegImagePromise,
 
     buildPageHTML(EMOTION)
-      .then(pageHTML => writeFile(path.join(folderPath(EMOTION), "index.html"), pageHTML))
-      //.then(() => { process.send(`html for ${emotion} done…`); })
+      .then(pageHTML => writeFile(path.join(DIR_PATH, "index.html"), pageHTML))
       .catch(error => { console.log(error); }),
 
     buildOembedJSON(EMOTION)
-      .then(pageOembedJSON => writeFile(path.join(folderPath(EMOTION), "oembed.json"), pageOembedJSON))
-      //.then(() => { process.send(`oembed for ${emotion} done…`); })
+      .then(pageOembedJSON => writeFile(path.join(DIR_PATH, "oembed.json"), pageOembedJSON))
       .catch(error => { console.log(error); }),
   ]);
 }());

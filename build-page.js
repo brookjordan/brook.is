@@ -27,7 +27,7 @@ const exists = promisify(fs.exists);
 const writeFile = promisify(fs.writeFile);
 const jimp = require("jimp");
 const getImageColors = require("get-image-colors");
-const dominantColor = path => getImageColors(path).then(colors => colors[0].css());
+const dominantColors = path => getImageColors(path).then(colors => colors.map(color => color.css()));
 
 const imageSizes = {};
 
@@ -172,10 +172,10 @@ async function buildPageHTML(EMOTION) {
   await jpegImagePromise;
   let [
     metaTags,
-    backgroundColor,
+    backgroundColors,
   ] = await Promise.all([
     metaTagsPromise,
-    dominantColor(JPEG_PATH),
+    dominantColors(JPEG_PATH),
   ]);
   return `
   <head>${metaTags}
@@ -185,7 +185,14 @@ async function buildPageHTML(EMOTION) {
         height: 100%;
       }
       html {
-        background-color: ${backgroundColor};
+        background-color: ${backgroundColors[0]};
+        background:
+          linear-gradient(to bottom right,
+            ${backgroundColors[0]},
+            ${backgroundColors[1]},
+            ${backgroundColors[2]}
+          )
+        ;
       }
       body::before {
         content: '';

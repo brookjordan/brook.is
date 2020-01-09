@@ -187,14 +187,27 @@ async function buildPageHTML(EMOTION) {
     <style>
       body,html {
         margin: 0;
+        width: 100%;
         height: 100%;
       }
       html {
+        position: fixed;
+        top: 0;
+        left: 0;
         background-color: ${backgroundColors[0]};
         background:
           linear-gradient(to bottom right,
-            ${backgroundColors[0]},
             ${backgroundColors[1]},
+            ${backgroundColors[0]},
+            ${backgroundColors[2]}
+          )
+        ;
+        background:
+          linear-gradient(to bottom right,
+            ${backgroundColors[1]},
+            20%,
+            ${backgroundColors[0]},
+            80%,
             ${backgroundColors[2]}
           )
         ;
@@ -207,10 +220,16 @@ async function buildPageHTML(EMOTION) {
         left: 50%;
         width: 5%;
         height: 5%;
-        background: 50% 50% / cover url("${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg");
+        background:
+          50% 50% / cover
+          url("${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg")
+        ;
         filter: blur(0.1vmax);
         opacity: 0.5;
-        transform: translate(-50%, -50%) scale(24);
+        transform:
+          translate(-50%, -50%)
+          scale(24)
+        ;
         will-change: transform;
       }
       img {

@@ -83,6 +83,9 @@ async function buildOembedJSON(EMOTION) {
 async function buildMetaTags(EMOTION) {
   const { width, height } = await getImageSize(EMOTION);
   return `
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>${EMOTION.humanised.sentenceCased}</title>
   <meta name="description" content="Brook is ${EMOTION.humanised}">
 
@@ -178,6 +181,8 @@ async function buildPageHTML(EMOTION) {
     dominantColors(JPEG_PATH),
   ]);
   return `
+<!DOCTYPE html>
+<html lang="en">
   <head>${metaTags}
     <style>
       body,html {
@@ -228,7 +233,8 @@ async function buildPageHTML(EMOTION) {
     <span itemprop="thumbnail" itemscope itemtype="https://schema.org/ImageObject">
       <link itemprop="url" href="${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg">
     </span>
-  </body>`;
+  </body>
+</html>`;
 }
 
 (async function() {

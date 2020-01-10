@@ -22,14 +22,14 @@ async function buildWebSite() {
     .map(fileName => fileName.slice(0, -4));
   let remainingEmotions = emotions.slice(0).reverse();
   return Promise.all([
-    ...childProcesses.map(async childProcess => {
+    ...childProcesses.map(childProcess => (async function() {
       while (remainingEmotions.length) {
         let emotion = remainingEmotions.pop();
         await childProcess.run(`EMOTION=${emotion} GIF_FOLDER_NAME=${GIF_FOLDER_NAME} node build-page.js`);
         console.log(`${emotion} page built…`);
       }
       childProcess.end();
-    }),
+    })()),
 
     (async function() {
       let indexProcess = spawnBashProcess();

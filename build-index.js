@@ -78,7 +78,7 @@ const writeFile = promisify(fs.writeFile);
       <h1>How is Brook today?</h1>
       <ul><li>${
         EMOTIONS.map(emotion => `
-          <a href="${BASE_URL}/${GIF_FOLDER_NAME}/${emotion}.gif">
+          <a href="${BASE_URL}/${emotion}">
             Brook is ${emotion.humanised}
           </a>
         `).join("</li><li>")

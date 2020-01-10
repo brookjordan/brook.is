@@ -261,7 +261,7 @@ async function buildPageHTML(EMOTION) {
     await mkdir(DIR_PATH);
   }
 
-  Promise.all([
+  await Promise.all([
     jpegImagePromise,
 
     buildPageHTML(EMOTION)

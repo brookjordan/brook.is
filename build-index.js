@@ -32,6 +32,9 @@ const writeFile = promisify(fs.writeFile);
       <meta name="description" content="How is Brook today?">
 
       <style>
+        body {
+          font-family: sans-serif;
+        }
         ul {
           column-width: 130px;
           column-gap: 40px;
@@ -42,10 +45,32 @@ const writeFile = promisify(fs.writeFile);
           break-inside: avoid;
           break-inside: avoid-column;
         }
+        li::before,
+        li::after {
+          content: "";
+          display: table;
+        }
         a {
           display: block;
-          padding: 6px 0;
+          padding: 6px 10px;
           line-height: 1.3;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+          border-radius: 5px;
+          margin: 10px;
+          text-decoration: none;
+          transition: box-shadow 0.15s;
+        }
+        a:hover {
+          text-decoration: underline;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        a:active {
+          text-decoration: none;
+          text-decoration: underline;
+          transform: translateY(2px);
+          box-shadow: 0 0 rgba(0,0,0,0.3);
+          transition-duration: 0.05s;
         }
       </style>
     </head>

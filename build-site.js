@@ -21,7 +21,7 @@ async function buildWebSite() {
     .filter(fileName => !/-\d+\.gif$/.test(fileName))
     .map(fileName => fileName.slice(0, -4));
   let remainingEmotions = emotions.slice(0).reverse();
-  return Promise.all(
+  return Promise.all([
     ...childProcesses.map(async childProcess => {
       while (remainingEmotions.length) {
         let emotion = remainingEmotions.pop();
@@ -37,7 +37,7 @@ async function buildWebSite() {
       await indexProcess.end();
       console.log("index page built…");
     })(),
-  );
+  ]);
 }
 
 (async function() {

@@ -58,7 +58,7 @@ const writeFile = promisify(fs.writeFile);
           border-radius: 5px;
           margin: 10px;
           text-decoration: none;
-          transition: box-shadow 0.15s;
+          transition: box-shadow 0.15s, transform 0.15s;
         }
         a:hover {
           text-decoration: underline;

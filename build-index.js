@@ -32,6 +32,9 @@ const writeFile = promisify(fs.writeFile);
       <meta name="description" content="How is Brook today?">
 
       <style>
+        html {
+          background-color: #ddd;
+        }
         body {
           font-family: sans-serif;
         }
@@ -59,6 +62,7 @@ const writeFile = promisify(fs.writeFile);
           margin: 10px;
           text-decoration: none;
           transition: box-shadow 0.15s, transform 0.15s;
+          background: white;
         }
         a:hover {
           text-decoration: underline;

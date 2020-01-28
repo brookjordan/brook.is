@@ -5,6 +5,7 @@
   "main": "build-site.js",
   "scripts": {
     "dev": "BASE_URL=http://127.0.0.1:5500 node build-site.js",
+    "build-index": "BASE_URL=http://127.0.0.1:5500 ONLY_INDEX=true node build-site.js",
     "prod": "BASE_URL=https://brook.is node build-site.js"
   },
   "repository": {

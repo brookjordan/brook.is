@@ -103,9 +103,24 @@ const writeFile = promisify(fs.writeFile);
           position: relative;
           transition: opacity 0.5s;
         }
+        a img {
+          display: none;
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          opacity: 0;
+          transition: opacity 0.15s;
+        }
         a:hover span {
           opacity: 0;
           transition: opacity 0.15s;
+        }
+        a:hover img {
+          display: block !important;
+          opacity: 1;
         }
       </style>
     </head>
@@ -113,7 +128,11 @@ const writeFile = promisify(fs.writeFile);
       <h1>How is Brook today?</h1>
       <ul><li>${
         EMOTIONS.map(emotion => `
-          <a href="${BASE_URL}/${emotion}" style="background-image:url('./_jpegs/${emotion}.jpg')">
+          <a
+            href="${BASE_URL}/${emotion}"
+            style="background-image:url('./_jpegs/${emotion}.jpg')"
+          >
+            <img src="./__gifs/${emotion}.gif" style="display:none">
             <span>${emotion.humanised}</span>
           </a>
         `).join("</li><li>")

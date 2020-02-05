@@ -119,7 +119,7 @@ const writeFile = promisify(fs.writeFile);
           transition: opacity 0.15s;
         }
         a:hover img {
-          display: block !important;
+          display: block;
           opacity: 1;
         }
       </style>
@@ -132,11 +132,19 @@ const writeFile = promisify(fs.writeFile);
             href="${BASE_URL}/${emotion}"
             style="background-image:url('./_jpegs/${emotion}.jpg')"
           >
-            <img src="./__gifs/${emotion}.gif" style="display:none">
+            <img data-src="./__gifs/${emotion}.gif">
             <span>${emotion.humanised}</span>
           </a>
         `).join("</li><li>")
       }</li></ul>
+
+      <script>
+        [...document.querySelectorAll("img")].forEach(img => {
+          img.addEventListener("mouseenter", () => {
+            img.src = img.getAttribute("data-src");
+          }, { once: false });
+        });
+      </script>
     </body>
   </html>`);
 }());

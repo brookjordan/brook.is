@@ -136,7 +136,7 @@ const writeFile = promisify(fs.writeFile);
       <ul><li>${
         EMOTIONS.map(emotion => `
           <a href="${BASE_URL}/${emotion}">
-            <img src="./_jpegs/${emotion}.jpg" loading=”lazy”>
+            <img src="./_jpegs/${emotion}.jpg" loading="lazy">
             <img data-src="./__gifs/${emotion}.gif">
             <span>${emotion.humanised}</span>
           </a>

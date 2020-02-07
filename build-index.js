@@ -56,7 +56,6 @@ const writeFile = promisify(fs.writeFile);
         a {
           position: relative;
           display: block;
-          padding: 10px;
           min-height: 200px;
           line-height: 1.3;
           box-shadow: 0 2px 5px rgba(0,0,0,0.2);
@@ -72,7 +71,7 @@ const writeFile = promisify(fs.writeFile);
           background-size: cover;
           background-position: 50% 50%;
         }
-        a::before {
+        a::after {
           content: "";
           display: block;
           background: rgba(0,0,0,0.5);
@@ -88,7 +87,7 @@ const writeFile = promisify(fs.writeFile);
           box-shadow: 0 4px 8px rgba(0,0,0,0.1);
           z-index: 1;
         }
-        a:hover::before {
+        a:hover::after {
           opacity: 0;
           transition: opacity 0.15s;
         }
@@ -100,17 +99,25 @@ const writeFile = promisify(fs.writeFile);
           transition-duration: 0.05s;
         }
         a span {
-          position: relative;
+          display: block;
+          position: absolute;
           transition: opacity 0.5s;
+          top: 10px;
+          left: 10px;
+          max-width: calc(100% - 20px);
+          z-index: 1;
         }
         a img {
-          display: none;
+          display: block;
           position: absolute;
           top: 0;
           left: 0;
           width: 100%;
           height: 100%;
           object-fit: cover;
+        }
+        a img + img {
+          display: none;
           opacity: 0;
           transition: opacity 0.15s;
         }
@@ -118,7 +125,7 @@ const writeFile = promisify(fs.writeFile);
           opacity: 0;
           transition: opacity 0.15s;
         }
-        a:hover img {
+        a:hover img + img {
           display: block;
           opacity: 1;
         }
@@ -128,10 +135,8 @@ const writeFile = promisify(fs.writeFile);
       <h1>How is Brook today?</h1>
       <ul><li>${
         EMOTIONS.map(emotion => `
-          <a
-            href="${BASE_URL}/${emotion}"
-            style="background-image:url('./_jpegs/${emotion}.jpg')"
-          >
+          <a href="${BASE_URL}/${emotion}">
+            <img src="./_jpegs/${emotion}.jpg" loading=”lazy”>
             <img data-src="./__gifs/${emotion}.gif">
             <span>${emotion.humanised}</span>
           </a>
@@ -139,8 +144,8 @@ const writeFile = promisify(fs.writeFile);
       }</li></ul>
 
       <script>
-        [...document.querySelectorAll("img")].forEach(img => {
-          img.addEventListener("mouseenter", () => {
+        [...document.querySelectorAll("img[data-src]")].forEach(img => {
+          img.parentNode.parentNode.addEventListener("mouseenter", () => {
             img.src = img.getAttribute("data-src");
           }, { once: false });
         });

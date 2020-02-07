@@ -12,10 +12,7 @@ const GIF_FOLDER_PATH = path.join(__dirname, GIF_FOLDER_NAME);
 const childProcesses = Array.from({ length: CHILD_PROCESS_COUNT }, () => spawnBashProcess());
 
 async function buildWebSite() {
-  const gifs = await readdir(GIF_FOLDER_PATH);
-  if (gifs.some(fileName => !fileName.endsWith(".gif"))) {
-    throw "non-gif-image-error"
-  }
+  const gifs = (await readdir(GIF_FOLDER_PATH)).filter(fileName => fileName.endsWith(".gif"));
 
   const emotions = gifs
     .filter(fileName => !/-\d+\.gif$/.test(fileName))

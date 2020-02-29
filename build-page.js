@@ -245,6 +245,27 @@ async function buildMetaTags(EMOTION) {
   <meta
     itemprop="image"
     property="og:image"
+    content="${GIF_URL}"/>
+  <meta
+    itemprop="image"
+    property="og:image:secure_url"
+    content="${GIF_URL}"/>
+  <meta
+    property="og:image:type"
+    content="image/gif"/>
+  <meta
+    property="og:image:alt"
+    content="Brook is ${EMOTION.humanised}"/>
+  <meta
+    property="og:image:width"
+    content="${width}"/>
+  <meta
+    property="og:image:height"
+    content="${height}"/>
+
+  <meta
+    itemprop="image"
+    property="og:image"
     content="${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg"/>
   <meta
     itemprop="image"
@@ -265,13 +286,13 @@ async function buildMetaTags(EMOTION) {
 
   <meta
     property="og:video:url"
-    content="${GIF_URL}"/>
+    content="${MOVIE_URL}"/>
   <meta
     property="og:video:secure_url"
-    content="${GIF_URL}"/>
+    content="${MOVIE_URL}"/>
   <meta
     property="og:video:type"
-    content="image/gif"/>
+    content="video/mp4"/>
   <meta
     property="og:video:width"
     content="${width}"/>
@@ -281,13 +302,13 @@ async function buildMetaTags(EMOTION) {
 
   <meta
     property="og:video:url"
-    content="${MOVIE_URL}"/>
+    content="${GIF_URL}"/>
   <meta
     property="og:video:secure_url"
-    content="${MOVIE_URL}"/>
+    content="${GIF_URL}"/>
   <meta
     property="og:video:type"
-    content="video/mp4"/>
+    content="image/gif"/>
   <meta
     property="og:video:width"
     content="${width}"/>

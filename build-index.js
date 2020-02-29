@@ -47,6 +47,11 @@ const writeFile = promisify(fs.writeFile);
           grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
           padding-left: 20px;
         }
+        li {
+          display: block;
+          transform: scale(1) translateY(0);
+          transition: box-shadow 0.15s, transform 0.15s;
+        }
         a {
           position: relative;
           display: block;
@@ -56,8 +61,6 @@ const writeFile = promisify(fs.writeFile);
           border-radius: 5px;
           margin: 10px;
           text-decoration: none;
-          transform: scale(1) translateY(0);
-          transition: box-shadow 0.15s, transform 0.15s;
           color: white;
           overflow: hidden;
           font-size: 20px;
@@ -74,12 +77,12 @@ const writeFile = promisify(fs.writeFile);
           height: 100%;
           transition: opacity 0.5s;
         }
-        a:hover {
+        li:hover {
           transform: scale(1.2) translateY(-2px);
           box-shadow: 0 4px 8px rgba(0,0,0,0.1);
           z-index: 1;
         }
-        a:hover::after {
+        li:hover a::after {
           opacity: 0;
           transition: opacity 0.15s;
         }
@@ -114,11 +117,11 @@ const writeFile = promisify(fs.writeFile);
           opacity: 0;
           transition: opacity 0.15s;
         }
-        a:hover span {
+        li:hover span {
           opacity: 0;
           transition: opacity 0.15s;
         }
-        a:hover video {
+        li:hover video {
           display: block;
           opacity: 1;
         }

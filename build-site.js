@@ -27,7 +27,11 @@ async function buildWebSite() {
     emotionBuilds = childProcesses.map(childProcess => (async function() {
       while (remainingEmotions.length) {
         let emotion = remainingEmotions.pop();
-        await childProcess.run(`EMOTION=${emotion} GIF_FOLDER_NAME=${GIF_FOLDER_NAME} node build-page.js`);
+        try {
+          await childProcess.run(`EMOTION=${emotion} GIF_FOLDER_NAME=${GIF_FOLDER_NAME} node build-page.js`);
+        } catch (error) {
+          console.log(`Error building ${emotion}:\n${error}`);
+        }
         console.log(`${emotion} page built…`);
       }
       childProcess.end();

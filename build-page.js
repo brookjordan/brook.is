@@ -331,7 +331,7 @@ async function buildPageHTML(EMOTION) {
       src="${GIF_URL}"
       alt="Brook is ${EMOTION.humanised}"
     -->
-    <video src="${MOVIE_URL}" alt="Brook is ${EMOTION.humanised}"></video>
+    <video src="${MOVIE_URL}" autoplay loop poster="${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg" alt="Brook is ${EMOTION.humanised}"></video>
     <link itemprop="thumbnailUrl" href="${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg">
     <span itemprop="thumbnail" itemscope itemtype="https://schema.org/ImageObject">
       <link itemprop="url" href="${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg">

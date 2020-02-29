@@ -13,9 +13,11 @@ const childProcesses = Array.from({ length: CHILD_PROCESS_COUNT }, () => spawnBa
 
 async function buildWebSite() {
   const gifs = (await readdir(GIF_FOLDER_PATH)).filter(fileName => fileName.endsWith(".gif"));
+  let buildGifCount = 0;
 
-  const emotions = gifs
-    .filter(fileName => !/-\d+\.gif$/.test(fileName))
+  const filteredGifs = gifs
+    .filter(fileName => !/-\d+\.gif$/.test(fileName));
+  const emotions = filteredGifs
     .map(fileName => fileName.slice(0, -4));
   let remainingEmotions = emotions.slice(0).reverse();
 
@@ -32,7 +34,8 @@ async function buildWebSite() {
         } catch (error) {
           console.log(`Error building ${emotion}:\n${error}`);
         }
-        console.log(`${emotion} page built…`);
+        buildGifCount += 1;
+        console.log(`${emotion} page built: ${+((buildGifCount / filteredGifs.length) * 100).toFixed(1)}%`);
       }
       childProcess.end();
     })());

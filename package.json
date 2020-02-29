@@ -19,7 +19,6 @@
   },
   "homepage": "https://github.com/brookjordan/brook.is#readme",
   "devDependencies": {
-    "@ffmpeg-installer/ffmpeg": "^1.0.20",
     "fluent-ffmpeg": "^2.1.2",
     "get-image-colors": "^2.0.0",
     "image-size": "^0.8.3",

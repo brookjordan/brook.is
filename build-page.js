@@ -377,12 +377,18 @@ async function buildPageHTML(EMOTION) {
 
   <body>
     <video
-      src="${MOVIE_URL}"
+      muted
       autoplay
       loop
       poster="${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg"
       alt="Brook is ${EMOTION.humanised}"
     >
+      <source
+        src="${MOVIE_URL}.webm"
+        type="video/webm">
+      <source
+        src="${MOVIE_URL}.mp4"
+        type="video/mp4">
       <img
         src="${GIF_URL}"
         alt="Brook is ${EMOTION.humanised}"

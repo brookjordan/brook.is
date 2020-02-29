@@ -23,7 +23,9 @@ const fs = require("fs");
 const path = require("path");
 const imageSize = require("image-size");
 const movieBuilder = require("fluent-ffmpeg");
-// movieBuilder.setFfmpegPath(path.join(__dirname, "ffmpeg"));
+if (process.env.FFMPEG_BINARY) {
+  movieBuilder.setFfmpegPath(path.join(__dirname, process.env.FFMPEG_BINARY));
+}
 const mkdir = promisify(fs.mkdir);
 const exists = promisify(fs.exists);
 const writeFile = promisify(fs.writeFile);

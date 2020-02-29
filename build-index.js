@@ -131,7 +131,7 @@ const writeFile = promisify(fs.writeFile);
       <h1>How is Brook today?</h1>
       <ul><li>${
         EMOTIONS.map(emotion => `
-          <a href="${BASE_URL}/${emotion}" data-mov-src="/_movs_small/${emotion}.mp4">
+          <a href="${BASE_URL}/${emotion}" data-emotion="${emotion}">
             <img src="/_jpegs/${emotion}.jpg" loading="lazy" width="1" height="1">
             <span class="emotion__label">${emotion.humanised}</span>
           </a>
@@ -139,13 +139,22 @@ const writeFile = promisify(fs.writeFile);
       }</li></ul>
 
       <script>
-        [...document.querySelectorAll("[data-mov-src]")].forEach(link => {
+        [...document.querySelectorAll("[data-emotion]")].forEach(link => {
           link.parentNode.addEventListener("mouseenter", () => {
             let video = document.createElement("video");
-            video.src = link.getAttribute("data-mov-src");
-            video.type = "video/mp4";
+            let sourceMp4 = document.createElement("source");
+            let sourceWebm = document.createElement("source");
+
+            sourceMp4.src = \`/_movs_small/\${link.getAttribute("data-emotion")}.mp4\`;
+            sourceMp4.type = "video/mp4";
+
+            sourceWebm.src = \`/_movs_small/\${link.getAttribute("data-emotion")}.webm\`;
+            sourceWebm.type = "video/webm";
+
             video.autoplay = "autoplay";
             video.loop = "loop";
+            video.append(sourceWebm);
+            video.append(sourceMp4);
             link.insertBefore(video, link.querySelector(".emotion__label"));
           }, { once: true });
         });

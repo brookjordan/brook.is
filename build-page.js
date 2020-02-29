@@ -48,13 +48,13 @@ const MOVIE_SMALL_FOLDER_PATH = path.join(__dirname, MOVIE_SMALL_FOLDER_NAME);
 const GIF_BIG_PATH = path.join(GIF_BIG_FOLDER_PATH, `${EMOTION}.gif`);
 const GIF_PATH = path.join(GIF_FOLDER_PATH, `${EMOTION}.gif`);
 const JPEG_PATH = path.join(JPEG_FOLDER_PATH, `${EMOTION}.jpg`);
-const MOVIE_PATH = path.join(MOVIE_FOLDER_PATH, `${EMOTION}.mp4`);
-const MOVIE_SMALL_PATH = path.join(MOVIE_SMALL_FOLDER_PATH, `${EMOTION}.mp4`);
+const MOVIE_PATH = path.join(MOVIE_FOLDER_PATH, `${EMOTION}`);
+const MOVIE_SMALL_PATH = path.join(MOVIE_SMALL_FOLDER_PATH, `${EMOTION}`);
 const DIR_PATH = path.join(__dirname, EMOTION);
 const GIF_URL = `${BASE_URL}/${GIF_FOLDER_NAME}/${EMOTION}.gif`;
 const JPEG_URL = `${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg`;
-const MOVIE_URL = `${BASE_URL}/${MOVIE_FOLDER_NAME}/${EMOTION}.mp4`;
-const MOVIE_SMALL_URL = `${BASE_URL}/${MOVIE_SMALL_FOLDER_NAME}/${EMOTION}.mp4`;
+const MOVIE_URL = `${BASE_URL}/${MOVIE_FOLDER_NAME}/${EMOTION}`;
+const MOVIE_SMALL_URL = `${BASE_URL}/${MOVIE_SMALL_FOLDER_NAME}/${EMOTION}`;
 
 async function buildJpeg() {
   try {
@@ -80,18 +80,39 @@ async function buildMov() {
     } else {
       gifPath = GIF_PATH;
     }
-    return new Promise((resolve, reject) => {
-      movieBuilder(gifPath)
-        .withNoAudio()
-        // .videoBitrate("32")
-        .toFormat("mp4")
-        .videoCodec("mpeg4")
-        .output(MOVIE_PATH)
-        .on("end", end => { resolve(end); })
-        .on("error", error => { reject(error); })
-        // .on("stderr", stderr => { console.log(`Movie building warning:\n${stderr}`); })
-        .run();
-    });
+    return Promise.all([
+      new Promise(async (resolve, reject) => {
+        let videoPath = `${MOVIE_PATH}.mp4`;
+        if (await exists(videoPath))
+        { console.log(`${EMOTION} mp4 exists. Skipping creation.`);
+          resolve(true);
+          return;
+        }
+        movieBuilder(gifPath)
+          .withNoAudio()
+          .toFormat("mp4")
+          .videoCodec("mpeg4")
+          .output(videoPath)
+          .on("end", end => { resolve(end); })
+          .on("error", error => { reject(error); })
+          .run();
+      }),
+
+      new Promise(async (resolve, reject) => {
+        let videoPath = `${MOVIE_PATH}.webm`;
+        if (await exists(videoPath))
+        { console.log(`${EMOTION} webm exists. Skipping creation.`);
+          resolve(true);
+          return;
+        }
+        movieBuilder(gifPath)
+          .withNoAudio()
+          .output(videoPath)
+          .on("end", end => { resolve(end); })
+          .on("error", error => { reject(error); })
+          .run();
+      }),
+    ]);
   } catch (error) {
     console.log(`Movie building error:\n${error}`);
   }
@@ -108,19 +129,45 @@ async function buildMovSmall() {
     } else {
       gifPath = GIF_PATH;
     }
-    return new Promise((resolve, reject) => {
-      movieBuilder(gifPath)
-        .withNoAudio()
-        .videoBitrate("16")
-        .toFormat("mp4")
-        .videoCodec("mpeg4")
-        .withSize("?x150")
-        .output(MOVIE_SMALL_PATH)
-        .on("end", end => { resolve(end); })
-        .on("error", error => { reject(error); })
-        // .on("stderr", stderr => { console.log(`Movie building warning:\n${stderr}`); })
-        .run();
-    });
+    return Promise.all([
+      new Promise(async (resolve, reject) => {
+        let videoPath = `${MOVIE_SMALL_PATH}.mp4`;
+        if (await exists(videoPath)) {
+          console.log(`${EMOTION} small mp4 exists. Skipping creation.`);
+          resolve(true);
+          return;
+        }
+        movieBuilder(gifPath)
+          .withNoAudio()
+          .videoBitrate("16")
+          .toFormat("mp4")
+          .videoCodec("mpeg4")
+          .withSize("?x150")
+          .output(videoPath)
+          .on("end", end => { resolve(end); })
+          .on("error", error => { reject(error); })
+          .run();
+      }),
+
+      new Promise(async (resolve, reject) => {
+        let videoPath = `${MOVIE_SMALL_PATH}.webm`;
+        if (await exists(videoPath)) {
+          console.log(`${EMOTION} small webm exists. Skipping creation.`);
+          resolve(true);
+          return;
+        }
+        movieBuilder(gifPath)
+          .withNoAudio()
+          .videoBitrate("32")
+          // .toFormat("webm")
+          // .videoCodec("libvpx")
+          .withSize("?x150")
+          .output(videoPath)
+          .on("end", end => { resolve(end); })
+          .on("error", error => { reject(error); })
+          .run();
+      }),
+    ]);
   } catch (error) {
     console.log(`Small movie building error:\n${error}`);
   }

@@ -133,8 +133,8 @@ const writeFile = promisify(fs.writeFile);
       <h1>How is Brook today?</h1>
       <ul><li>${
         EMOTIONS.map(emotion => `
-          <a href="${BASE_URL}/${emotion}" data-mov-src="./_movs_small/${emotion}.mp4">
-            <img src="./_jpegs/${emotion}.jpg" loading="lazy" width="1" height="1">
+          <a href="${BASE_URL}/${emotion}" data-mov-src="/_movs_small/${emotion}.mp4">
+            <img src="/_jpegs/${emotion}.jpg" loading="lazy" width="1" height="1">
             <span class="emotion__label">${emotion.humanised}</span>
           </a>
         `).join("</li><li>")

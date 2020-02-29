@@ -22,7 +22,7 @@ const promisify = require("util").promisify;
 const fs = require("fs");
 const path = require("path");
 const imageSize = require("image-size");
-const movieBuilder = require('fluent-ffmpeg');
+const movieBuilder = require("fluent-ffmpeg");
 movieBuilder.setFfmpegPath(path.join(__dirname, "ffmpeg"));
 const mkdir = promisify(fs.mkdir);
 const exists = promisify(fs.exists);
@@ -62,9 +62,10 @@ async function buildJpeg() {
     let gifImage = await jimp.read(GIF_PATH);
     return gifImage.quality(80).write(JPEG_PATH);
   } catch (error) {
-    console.log(error);
+    console.log(`JPEG build error:\n${error}`);
   }
 }
+const jpegBuildPromise = buildJpeg();
 
 async function buildMov() {
   try {
@@ -80,13 +81,13 @@ async function buildMov() {
     return new Promise((resolve, reject) => {
       movieBuilder(gifPath)
         .withNoAudio()
-        // .videoBitrate('32')
+        // .videoBitrate("32")
         .toFormat("mp4")
         .videoCodec("mpeg4")
         .output(MOVIE_PATH)
-        .on('end', end => { resolve(end); })
-        .on('error', error => { reject(error); })
-        // .on('stderr', stderr => { console.log(`Movie building warning:\n${stderr}`); })
+        .on("end", end => { resolve(end); })
+        .on("error", error => { reject(error); })
+        // .on("stderr", stderr => { console.log(`Movie building warning:\n${stderr}`); })
         .run();
     });
   } catch (error) {
@@ -108,14 +109,14 @@ async function buildMovSmall() {
     return new Promise((resolve, reject) => {
       movieBuilder(gifPath)
         .withNoAudio()
-        .videoBitrate('16')
+        .videoBitrate("16")
         .toFormat("mp4")
         .videoCodec("mpeg4")
         .withSize("?x150")
         .output(MOVIE_SMALL_PATH)
-        .on('end', end => { resolve(end); })
-        .on('error', error => { reject(error); })
-        // .on('stderr', stderr => { console.log(`Movie building warning:\n${stderr}`); })
+        .on("end", end => { resolve(end); })
+        .on("error", error => { reject(error); })
+        // .on("stderr", stderr => { console.log(`Movie building warning:\n${stderr}`); })
         .run();
     });
   } catch (error) {
@@ -247,6 +248,11 @@ async function buildMetaTags(EMOTION) {
   </script>`;
 }
 
+async function getDominantColors() {
+  await jpegBuildPromise;
+  return await dominantColors(JPEG_PATH);
+}
+
 async function buildPageHTML(EMOTION) {
   const metaTagsPromise = buildMetaTags(EMOTION);
   let [
@@ -254,7 +260,7 @@ async function buildPageHTML(EMOTION) {
     backgroundColors,
   ] = await Promise.all([
     metaTagsPromise,
-    dominantColors(JPEG_PATH),
+    getDominantColors(),
   ]);
   return `
 <!DOCTYPE html>
@@ -289,7 +295,7 @@ async function buildPageHTML(EMOTION) {
         ;
       }
       body::before {
-        content: '';
+        content: "";
         display: block;
         position: absolute;
         top: 50%;
@@ -341,7 +347,7 @@ async function buildPageHTML(EMOTION) {
 
   try {
     await Promise.all([
-      buildJpeg(),
+      jpegBuildPromise,
       buildMovSmall(),
       buildMov(),
 
@@ -351,7 +357,7 @@ async function buildPageHTML(EMOTION) {
 
       buildOembedJSON(EMOTION)
         .then(pageOembedJSON => writeFile(path.join(DIR_PATH, "oembed.json"), pageOembedJSON))
-        .catch(error => { console.log(error); }),
+        .catch(error => { console.log(`OEmbed build error:\n${error}`); }),
     ]);
   } catch (error) {
     console.log(`Error build assets for ${EMOTION}\n${error}`)

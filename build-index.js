@@ -47,11 +47,6 @@ const writeFile = promisify(fs.writeFile);
           grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
           padding-left: 20px;
         }
-        li {
-          display: block;
-          break-inside: avoid;
-          break-inside: avoid-column;
-        }
         a {
           position: relative;
           display: block;
@@ -146,6 +141,8 @@ const writeFile = promisify(fs.writeFile);
             let video = document.createElement("video");
             video.src = link.getAttribute("data-mov-src");
             video.type = "video/mp4";
+            video.autoplay = "autoplay";
+            video.loop = "loop";
             link.insertBefore(video, link.querySelector(".emotion__label"));
           }, { once: true });
         });

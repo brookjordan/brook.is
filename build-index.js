@@ -153,6 +153,7 @@ const writeFile = promisify(fs.writeFile);
 
             video.autoplay = "autoplay";
             video.loop = "loop";
+            video.muted = "muted";
             video.append(sourceWebm);
             video.append(sourceMp4);
             link.insertBefore(video, link.querySelector(".emotion__label"));

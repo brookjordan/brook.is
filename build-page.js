@@ -245,11 +245,11 @@ async function buildMetaTags(EMOTION) {
   <meta
     itemprop="image"
     property="og:image"
-    content="${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg"/>
+    content="${JPEG_URL}"/>
   <meta
     itemprop="image"
     property="og:image:secure_url"
-    content="${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg"/>
+    content="${JPEG_URL}"/>
   <meta
     property="og:image:type"
     content="image/jpeg"/>
@@ -390,7 +390,7 @@ async function buildPageHTML(EMOTION) {
         height: 5%;
         background:
           50% 50% / cover
-          url("${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg")
+          url("${JPEG_URL}")
         ;
         filter: blur(0.1vmax);
         opacity: 0.5;
@@ -417,7 +417,7 @@ async function buildPageHTML(EMOTION) {
       muted
       autoplay
       loop
-      poster="${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg"
+      poster="${JPEG_URL}"
       alt="Brook is ${EMOTION.humanised}"
     >
       <source
@@ -431,9 +431,9 @@ async function buildPageHTML(EMOTION) {
         alt="Brook is ${EMOTION.humanised}"
       >
     </video>
-    <link itemprop="thumbnailUrl" href="${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg">
+    <link itemprop="thumbnailUrl" href="${JPEG_URL}">
     <span itemprop="thumbnail" itemscope itemtype="https://schema.org/ImageObject">
-      <link itemprop="url" href="${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg">
+      <link itemprop="url" href="${JPEG_URL}">
     </span>
   </body>
 </html>`;

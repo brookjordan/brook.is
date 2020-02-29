@@ -3,6 +3,7 @@ const CHILD_PROCESS_COUNT = process.env.SPAWN_COUNT || 10;
 const promisify = require("util").promisify;
 const fs = require("fs");
 const path = require("path");
+const { performance } = require("perf_hooks");
 const readdir = promisify(fs.readdir);
 const spawnBashProcess = require("./spawn-bash-process.js");
 
@@ -14,6 +15,7 @@ const childProcesses = Array.from({ length: CHILD_PROCESS_COUNT }, () => spawnBa
 async function buildWebSite() {
   const gifs = (await readdir(GIF_FOLDER_PATH)).filter(fileName => fileName.endsWith(".gif"));
   let buildGifCount = 0;
+  let startTime = performance.now();
 
   const filteredGifs = gifs
     .filter(fileName => !/-\d+\.gif$/.test(fileName));
@@ -35,7 +37,11 @@ async function buildWebSite() {
           console.log(`Error building ${emotion}:\n${error}`);
         }
         buildGifCount += 1;
-        console.log(`${emotion} page built: ${+((buildGifCount / filteredGifs.length) * 100).toFixed(1)}%`);
+        console.log(`${
+          emotion} page built: ${
+          +((buildGifCount / filteredGifs.length) * 100).toFixed(1)}% | ${
+          +((performance.now() - startTime) / 1000).toFixed(2)
+        }s`);
       }
       childProcess.end();
     })());

@@ -245,14 +245,14 @@ async function buildMetaTags(EMOTION) {
   <meta
     itemprop="image"
     property="og:image"
-    content="${GIF_URL}"/>
+    content="${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg"/>
   <meta
     itemprop="image"
     property="og:image:secure_url"
-    content="${GIF_URL}"/>
+    content="${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg"/>
   <meta
     property="og:image:type"
-    content="image/gif"/>
+    content="image/jpeg"/>
   <meta
     property="og:image:alt"
     content="Brook is ${EMOTION.humanised}"/>
@@ -266,14 +266,14 @@ async function buildMetaTags(EMOTION) {
   <meta
     itemprop="image"
     property="og:image"
-    content="${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg"/>
+    content="${GIF_URL}"/>
   <meta
     itemprop="image"
     property="og:image:secure_url"
-    content="${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg"/>
+    content="${GIF_URL}"/>
   <meta
     property="og:image:type"
-    content="image/jpeg"/>
+    content="image/gif"/>
   <meta
     property="og:image:alt"
     content="Brook is ${EMOTION.humanised}"/>

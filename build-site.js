@@ -39,8 +39,8 @@ async function buildWebSite() {
         buildGifCount += 1;
         console.log(`${
           emotion} page built: ${
-          +((buildGifCount / filteredGifs.length) * 100).toFixed(1)}% | ${
-          +((performance.now() - startTime) / 1000).toFixed(2)
+          +((buildGifCount / filteredGifs.length) * 100).toFixed(1)}% in ${
+          +((performance.now() - startTime) / 1000).toFixed(1)
         }s`);
       }
       childProcess.end();

@@ -264,27 +264,6 @@ async function buildMetaTags(EMOTION) {
     content="${height}"/>
 
   <meta
-    itemprop="image"
-    property="og:image"
-    content="${GIF_URL}"/>
-  <meta
-    itemprop="image"
-    property="og:image:secure_url"
-    content="${GIF_URL}"/>
-  <meta
-    property="og:image:type"
-    content="image/gif"/>
-  <meta
-    property="og:image:alt"
-    content="Brook is ${EMOTION.humanised}"/>
-  <meta
-    property="og:image:width"
-    content="${width}"/>
-  <meta
-    property="og:image:height"
-    content="${height}"/>
-
-  <meta
     property="og:video:url"
     content="${MOVIE_URL}"/>
   <meta

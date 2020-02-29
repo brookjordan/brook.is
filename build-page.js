@@ -279,6 +279,22 @@ async function buildMetaTags(EMOTION) {
     property="og:video:height"
     content="${height}"/>
 
+  <meta
+    property="og:video:url"
+    content="${MOVIE_URL}"/>
+  <meta
+    property="og:video:secure_url"
+    content="${MOVIE_URL}"/>
+  <meta
+    property="og:video:type"
+    content="video/mp4"/>
+  <meta
+    property="og:video:width"
+    content="${width}"/>
+  <meta
+    property="og:video:height"
+    content="${height}"/>
+
   <link
     rel="alternate"
     type="application/json+oembed"

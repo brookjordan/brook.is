@@ -151,9 +151,9 @@ const writeFile = promisify(fs.writeFile);
             sourceWebm.src = \`/_movs_small/\${link.getAttribute("data-emotion")}.webm\`;
             sourceWebm.type = "video/webm";
 
+            video.muted = "muted";
             video.autoplay = "autoplay";
             video.loop = "loop";
-            video.muted = "muted";
             video.append(sourceWebm);
             video.append(sourceMp4);
             link.insertBefore(video, link.querySelector(".emotion__label"));

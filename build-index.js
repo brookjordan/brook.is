@@ -1,5 +1,4 @@
 const EMOTIONS = process.env.EMOTIONS.split(',');
-const GIF_FOLDER_NAME = process.env.GIF_FOLDER_NAME;
 const BASE_URL = process.env.BASE_URL || "https://brook.is";
 
 Object.defineProperties(String.prototype, {

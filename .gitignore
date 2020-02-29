@@ -1,4 +1,5 @@
 node_modules
 *.jpg
+*.mp4
 [^_][^_]*/
 index.html

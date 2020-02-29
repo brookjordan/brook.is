@@ -1,5 +1,5 @@
 const EMOTION = process.env.EMOTION;
-const GIF_FOLDER_NAME = process.env.GIF_FOLDER_NAME;
+const GIF_FOLDER_NAME = process.env.GIF_FOLDER_NAME || "__gifs";
 const BASE_URL = process.env.BASE_URL || "https://brook.is";
 
 Object.defineProperties(String.prototype, {
@@ -22,6 +22,7 @@ const promisify = require("util").promisify;
 const fs = require("fs");
 const path = require("path");
 const imageSize = require("image-size");
+const movieBuilder = require('fluent-ffmpeg');
 const mkdir = promisify(fs.mkdir);
 const exists = promisify(fs.exists);
 const writeFile = promisify(fs.writeFile);
@@ -31,20 +32,95 @@ const dominantColors = path => getImageColors(path).then(colors => colors.map(co
 
 const imageSizes = {};
 
+const GIF_BIG_FOLDER_NAME = "__original-gifs";
 const GIF_FOLDER_PATH = path.join(__dirname, GIF_FOLDER_NAME);
+const GIF_BIG_FOLDER_PATH = path.join(__dirname, GIF_BIG_FOLDER_NAME);
 const JPEG_FOLDER_NAME = "_jpegs";
 const JPEG_FOLDER_PATH = path.join(__dirname, JPEG_FOLDER_NAME);
+const MOVIE_FOLDER_NAME = "_movs";
+const MOVIE_FOLDER_PATH = path.join(__dirname, MOVIE_FOLDER_NAME);
+const MOVIE_SMALL_FOLDER_NAME = "_movs";
+const MOVIE_SMALL_FOLDER_PATH = path.join(__dirname, MOVIE_SMALL_FOLDER_NAME);
 
+const GIF_BIG_PATH = path.join(GIF_BIG_FOLDER_PATH, `${EMOTION}.gif`);
 const GIF_PATH = path.join(GIF_FOLDER_PATH, `${EMOTION}.gif`);
 const JPEG_PATH = path.join(JPEG_FOLDER_PATH, `${EMOTION}.jpg`);
+const MOVIE_PATH = path.join(MOVIE_FOLDER_PATH, `${EMOTION}.mp4`);
+const MOVIE_SMALL_PATH = path.join(MOVIE_SMALL_FOLDER_PATH, `${EMOTION}.mp4`);
 const DIR_PATH = path.join(__dirname, EMOTION);
 const GIF_URL = `${BASE_URL}/${GIF_FOLDER_NAME}/${EMOTION}.gif`;
 const JPEG_URL = `${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg`;
+const MOVIE_URL = `${BASE_URL}/${MOVIE_FOLDER_NAME}/${EMOTION}.mp4`;
+const MOVIE_SMALL_URL = `${BASE_URL}/${MOVIE_SMALL_FOLDER_NAME}/${EMOTION}.mp4`;
 
-const jpegImagePromise = jimp
-  .read(GIF_PATH)
-  .then(gifImage => gifImage.quality(80).write(JPEG_PATH))
-  .catch(error => { console.log(error); });
+async function buildJpeg() {
+  try {
+    if (!await exists(JPEG_FOLDER_PATH)) {
+      await mkdir(JPEG_FOLDER_PATH);
+    }
+    let gifImage = await jimp.read(GIF_PATH);
+    return gifImage.quality(80).write(JPEG_PATH);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function buildMov() {
+  try {
+    if (!await exists(MOVIE_FOLDER_PATH)) {
+      await mkdir(MOVIE_FOLDER_PATH);
+    }
+    let gifPath;
+    if (await exists(GIF_BIG_PATH)) {
+      gifPath = GIF_BIG_PATH;
+    } else {
+      gifPath = GIF_PATH;
+    }
+    return new Promise((resolve, reject) => {
+      movieBuilder(gifPath)
+        .withNoAudio()
+        // .videoBitrate('32')
+        .toFormat("mp4")
+        .videoCodec("mpeg4")
+        .output(MOVIE_PATH)
+        .on('end', end => { resolve(end); })
+        .on('error', error => { reject(error); })
+        // .on('stderr', stderr => { console.log(`Movie building warning:\n${stderr}`); })
+        .run();
+    });
+  } catch (error) {
+    console.log(`Movie building error:\n${error}`);
+  }
+}
+
+async function buildMovSmall() {
+  try {
+    if (!await exists(MOVIE_SMALL_FOLDER_PATH)) {
+      await mkdir(MOVIE_SMALL_FOLDER_PATH);
+    }
+    let gifPath;
+    if (await exists(GIF_BIG_PATH)) {
+      gifPath = GIF_BIG_PATH;
+    } else {
+      gifPath = GIF_PATH;
+    }
+    return new Promise((resolve, reject) => {
+      movieBuilder(gifPath)
+        .withNoAudio()
+        // .videoBitrate('32')
+        .toFormat("mp4")
+        .videoCodec("mpeg4")
+        .withSize("?x200")
+        .output(MOVIE_SMALL_PATH)
+        .on('end', end => { resolve(end); })
+        .on('error', error => { reject(error); })
+        // .on('stderr', stderr => { console.log(`Movie building warning:\n${stderr}`); })
+        .run();
+    });
+  } catch (error) {
+    console.log(`Small movie building error:\n${error}`);
+  }
+}
 
 function getImageSize(EMOTION) {
   // { width, height }
@@ -172,7 +248,6 @@ async function buildMetaTags(EMOTION) {
 
 async function buildPageHTML(EMOTION) {
   const metaTagsPromise = buildMetaTags(EMOTION);
-  await jpegImagePromise;
   let [
     metaTags,
     backgroundColors,
@@ -232,9 +307,10 @@ async function buildPageHTML(EMOTION) {
         ;
         will-change: transform;
       }
-      img {
-        position: relative;
+      img,
+      video {
         display: block;
+        position: relative;
         width: 100%;
         height: 100%;
         object-fit: contain;
@@ -244,10 +320,11 @@ async function buildPageHTML(EMOTION) {
   </head>
 
   <body>
-    <img
+    <!-- img
       src="${GIF_URL}"
       alt="Brook is ${EMOTION.humanised}"
-    >
+    -->
+    <video src="${MOVIE_URL}" alt="Brook is ${EMOTION.humanised}"></video>
     <link itemprop="thumbnailUrl" href="${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg">
     <span itemprop="thumbnail" itemscope itemtype="https://schema.org/ImageObject">
       <link itemprop="url" href="${BASE_URL}/${JPEG_FOLDER_NAME}/${EMOTION}.jpg">
@@ -261,15 +338,20 @@ async function buildPageHTML(EMOTION) {
     await mkdir(DIR_PATH);
   }
 
-  await Promise.all([
-    jpegImagePromise,
+  try {
+    await Promise.all([
+      buildJpeg(),
+      buildMov(),
 
-    buildPageHTML(EMOTION)
-      .then(pageHTML => writeFile(path.join(DIR_PATH, "index.html"), pageHTML))
-      .catch(error => { console.log(error); }),
+      buildPageHTML(EMOTION)
+        .then(pageHTML => writeFile(path.join(DIR_PATH, "index.html"), pageHTML))
+        .catch(error => { console.log(error); }),
 
-    buildOembedJSON(EMOTION)
-      .then(pageOembedJSON => writeFile(path.join(DIR_PATH, "oembed.json"), pageOembedJSON))
-      .catch(error => { console.log(error); }),
-  ]);
+      buildOembedJSON(EMOTION)
+        .then(pageOembedJSON => writeFile(path.join(DIR_PATH, "oembed.json"), pageOembedJSON))
+        .catch(error => { console.log(error); }),
+    ]);
+  } catch (error) {
+    console.log(`Error build assets for ${EMOTION}\n${error}`)
+  }
 }());

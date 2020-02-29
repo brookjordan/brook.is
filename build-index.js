@@ -104,7 +104,8 @@ const writeFile = promisify(fs.writeFile);
           max-width: calc(100% - 20px);
           z-index: 1;
         }
-        a img {
+        a img,
+        a video {
           display: block;
           position: absolute;
           top: 0;
@@ -113,8 +114,7 @@ const writeFile = promisify(fs.writeFile);
           height: 100%;
           object-fit: cover;
         }
-        a img + img,
-        a img:not([src]) {
+        a video {
           display: none;
           opacity: 0;
           transition: opacity 0.15s;
@@ -123,7 +123,7 @@ const writeFile = promisify(fs.writeFile);
           opacity: 0;
           transition: opacity 0.15s;
         }
-        a:hover img + img {
+        a:hover video {
           display: block;
           opacity: 1;
         }

@@ -4,8 +4,8 @@
   "description": "Brook feels",
   "main": "build-site.js",
   "scripts": {
-    "dev": "BASE_URL=http://127.0.0.1:5500 node build-site.js",
-    "build-index": "BASE_URL=http://127.0.0.1:5500 ONLY_INDEX=true node build-site.js",
+    "dev": "BASE_URL=http://localhost:5500 node build-site.js",
+    "build-index": "BASE_URL=http://localhost:5500 ONLY_INDEX=true node build-site.js",
     "prod": "BASE_URL=https://brook.is node build-site.js"
   },
   "repository": {
@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/brookjordan/brook.is#readme",
   "devDependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.0.20",
     "fluent-ffmpeg": "^2.1.2",
     "get-image-colors": "^2.0.0",
     "image-size": "^0.8.3",

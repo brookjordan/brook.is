@@ -67,8 +67,6 @@ const writeFile = promisify(fs.writeFile);
           overflow: hidden;
           font-size: 20px;
           font-weight: 100;
-          background-size: cover;
-          background-position: 50% 50%;
         }
         a::after {
           content: "";
@@ -115,7 +113,8 @@ const writeFile = promisify(fs.writeFile);
           height: 100%;
           object-fit: cover;
         }
-        a img + img {
+        a img + img,
+        a img:not([src]) {
           display: none;
           opacity: 0;
           transition: opacity 0.15s;
@@ -134,21 +133,24 @@ const writeFile = promisify(fs.writeFile);
       <h1>How is Brook today?</h1>
       <ul><li>${
         EMOTIONS.map(emotion => `
-          <a href="${BASE_URL}/${emotion}">
-            <img src="./_jpegs/${emotion}.jpg" loading="lazy">
-            <img data-src="./__gifs/${emotion}.gif">
-            <span>${emotion.humanised}</span>
+          <a href="${BASE_URL}/${emotion}" data-mov-src="./_movs_small/${emotion}.mp4">
+            <img src="./_jpegs/${emotion}.jpg" loading="lazy" width="1" height="1">
+            <span class="emotion__label">${emotion.humanised}</span>
           </a>
         `).join("</li><li>")
       }</li></ul>
 
       <script>
-        [...document.querySelectorAll("img[data-src]")].forEach(img => {
-          img.parentNode.parentNode.addEventListener("mouseenter", () => {
-            img.src = img.getAttribute("data-src");
-          }, { once: false });
+        [...document.querySelectorAll("[data-mov-src]")].forEach(link => {
+          link.parentNode.addEventListener("mouseenter", () => {
+            let video = document.createElement("video");
+            video.src = link.getAttribute("data-mov-src");
+            video.type = "video/mp4";
+            link.insertBefore(video, link.querySelector(".emotion__label"));
+          }, { once: true });
         });
       </script>
     </body>
   </html>`);
+  return;
 }());

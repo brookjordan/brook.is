@@ -22,7 +22,9 @@ const promisify = require("util").promisify;
 const fs = require("fs");
 const path = require("path");
 const imageSize = require("image-size");
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const movieBuilder = require('fluent-ffmpeg');
+movieBuilder.setFfmpegPath(ffmpegPath);
 const mkdir = promisify(fs.mkdir);
 const exists = promisify(fs.exists);
 const writeFile = promisify(fs.writeFile);
@@ -39,7 +41,7 @@ const JPEG_FOLDER_NAME = "_jpegs";
 const JPEG_FOLDER_PATH = path.join(__dirname, JPEG_FOLDER_NAME);
 const MOVIE_FOLDER_NAME = "_movs";
 const MOVIE_FOLDER_PATH = path.join(__dirname, MOVIE_FOLDER_NAME);
-const MOVIE_SMALL_FOLDER_NAME = "_movs";
+const MOVIE_SMALL_FOLDER_NAME = "_movs_small";
 const MOVIE_SMALL_FOLDER_PATH = path.join(__dirname, MOVIE_SMALL_FOLDER_NAME);
 
 const GIF_BIG_PATH = path.join(GIF_BIG_FOLDER_PATH, `${EMOTION}.gif`);
@@ -107,10 +109,10 @@ async function buildMovSmall() {
     return new Promise((resolve, reject) => {
       movieBuilder(gifPath)
         .withNoAudio()
-        // .videoBitrate('32')
+        .videoBitrate('16')
         .toFormat("mp4")
         .videoCodec("mpeg4")
-        .withSize("?x200")
+        .withSize("?x150")
         .output(MOVIE_SMALL_PATH)
         .on('end', end => { resolve(end); })
         .on('error', error => { reject(error); })
@@ -341,6 +343,7 @@ async function buildPageHTML(EMOTION) {
   try {
     await Promise.all([
       buildJpeg(),
+      buildMovSmall(),
       buildMov(),
 
       buildPageHTML(EMOTION)

@@ -1,0 +1,26 @@
+{
+  "name": "Squirish",
+  "short_name": "Squirish",
+  "background_color": "#454057",
+  "theme_color": "#454057",
+  "description": "One last challenge awaits our squire-in-training...",
+
+  "- - DON’T EDIT BELOW HERE": "Unless you know what you’re doing - -",
+  "start_url": "../",
+  "scope": "../",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "./icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "./icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ]
+}

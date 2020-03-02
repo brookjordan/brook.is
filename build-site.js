@@ -5,12 +5,41 @@ const fs = require("fs");
 const path = require("path");
 const { performance } = require("perf_hooks");
 const readdir = promisify(fs.readdir);
+const writeFile = promisify(fs.writeFile);
 const spawnBashProcess = require("./spawn-bash-process.js");
 
 const GIF_FOLDER_NAME = "__gifs";
 const GIF_FOLDER_PATH = path.join(__dirname, GIF_FOLDER_NAME);
 
 const childProcesses = Array.from({ length: CHILD_PROCESS_COUNT }, () => spawnBashProcess());
+
+async function buildCacheDetails(emotions) {
+  if (process.env.ONLY_INDEX) { return; }
+
+  const staticAssets = [
+    "../",
+    "../index.html",
+    "../favicon.ico",
+
+    ...emotions.flatMap(emotion => [
+      `../${emotion}/index.html`,
+      `../${emotion}/oembed.json`,
+      `../__gifs/${emotion}.gif`,
+      `../_jpegs/${emotion}.jpg`,
+      `../_movs/${emotion}.mp4`,
+      `../_movs/${emotion}.webm`,
+      `../_movs_small/${emotion}.mp4`,
+      `../_movs_small/${emotion}.webm`,
+    ]),
+  ];
+
+  await writeFile(path.join(__dirname, "pwa", "cache-details.js"), `
+    const cacheName = "squirish-v1";
+    const staticAssets = ${JSON.stringify(staticAssets, null, 2)};
+  `);
+
+  console.log("Asset cache list built…");
+}
 
 async function buildWebSite() {
   const gifs = (await readdir(GIF_FOLDER_PATH)).filter(fileName => fileName.endsWith(".gif"));
@@ -21,6 +50,7 @@ async function buildWebSite() {
     .filter(fileName => !/-\d+\.gif$/.test(fileName));
   const emotions = filteredGifs
     .map(fileName => fileName.slice(0, -4));
+  let buildCacheDetailsPromise = buildCacheDetails(emotions);
   let remainingEmotions = emotions.slice(0).reverse();
 
   let emotionBuilds;
@@ -48,6 +78,7 @@ async function buildWebSite() {
   }
 
   return Promise.all([
+    buildCacheDetailsPromise,
     ...emotionBuilds,
 
     (async function() {

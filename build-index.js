@@ -132,7 +132,7 @@ const writeFile = promisify(fs.writeFile);
       <ul><li>${
         EMOTIONS.map(emotion => `
           <a href="${BASE_URL}/${emotion}" data-emotion="${emotion}">
-            <img src="/_jpegs/${emotion}.jpg" loading="lazy" width="1" height="1">
+            <img src="/_jpegs/${emotion}.jpg" loading="lazy">
             <span class="emotion__label">${emotion.humanised}</span>
           </a>
         `).join("</li><li>")
@@ -160,6 +160,7 @@ const writeFile = promisify(fs.writeFile);
           }, { once: true });
         });
       </script>
+      <script src="./pwa/init.js" defer type="module"></script>
     </body>
   </html>`);
   return;

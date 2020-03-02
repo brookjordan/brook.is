@@ -22,7 +22,7 @@ const path = require("path");
 const writeFile = promisify(fs.writeFile);
 
 (async function() {
-  await writeFile(path.join(__dirname, "index.html"), `<html>
+  await writeFile(path.join(__dirname, "build", "index.html"), `<html>
     <head>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
 

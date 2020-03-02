@@ -49,15 +49,14 @@ const writeFile = promisify(fs.writeFile);
         }
         li {
           display: block;
-          transform: scale(1) translateY(0);
-          transition: box-shadow 0.15s, transform 0.15s;
         }
         a {
           position: relative;
           display: block;
           min-height: 200px;
-          line-height: 1.3;
           box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+          transform: scale(1) translateY(0);
+          line-height: 1.3;
           border-radius: 5px;
           margin: 10px;
           text-decoration: none;
@@ -65,6 +64,10 @@ const writeFile = promisify(fs.writeFile);
           overflow: hidden;
           font-size: 20px;
           font-weight: 100;
+          transition:
+            box-shadow 0.15s,
+            transform 0.15s
+          ;
         }
         a::after {
           content: "";
@@ -77,10 +80,10 @@ const writeFile = promisify(fs.writeFile);
           height: 100%;
           transition: opacity 0.5s;
         }
-        li:hover {
+        li:hover a {
           transform: scale(1.2) translateY(-2px);
-          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
           z-index: 1;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         li:hover a::after {
           opacity: 0;

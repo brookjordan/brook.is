@@ -415,6 +415,7 @@ async function buildPageHTML(EMOTION) {
       <link itemprop="url" href="${JPEG_URL}">
     </span>
   </body>
+  <script src="../pwa/init.js" defer type="module"></script>
 </html>`;
 }
 

@@ -22,14 +22,14 @@ async function buildCacheDetails(emotions) {
     "../favicon.ico",
 
     ...emotions.flatMap(emotion => [
-      `../${emotion}/index.html`,
-      `../${emotion}/oembed.json`,
-      `../__gifs/${emotion}.gif`,
+      //`../${emotion}/index.html`,
+      //`../${emotion}/oembed.json`,
+      //`../__gifs/${emotion}.gif`,
       `../_jpegs/${emotion}.jpg`,
-      `../_movs/${emotion}.mp4`,
-      `../_movs/${emotion}.webm`,
-      `../_movs_small/${emotion}.mp4`,
-      `../_movs_small/${emotion}.webm`,
+      //`../_movs/${emotion}.mp4`,
+      //`../_movs/${emotion}.webm`,
+      // `../_movs_small/${emotion}.mp4`,
+      // `../_movs_small/${emotion}.webm`,
     ]),
   ];
 

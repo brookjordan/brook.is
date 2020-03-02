@@ -45,7 +45,7 @@ const writeFile = promisify(fs.writeFile);
         ul {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-          padding-left: 20px;
+          padding: 0;
         }
         li {
           display: block;
@@ -154,8 +154,8 @@ const writeFile = promisify(fs.writeFile);
             video.muted = "muted";
             video.autoplay = "autoplay";
             video.loop = "loop";
-            video.append(sourceWebm);
             video.append(sourceMp4);
+            video.append(sourceWebm);
             link.insertBefore(video, link.querySelector(".emotion__label"));
           }, { once: true });
         });

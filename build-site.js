@@ -41,7 +41,16 @@ async function buildCacheDetails(emotions) {
   console.log("Asset cache list built…");
 }
 
+async function buildNodeVersionLock(emotions) {
+  let nodeVersion = /(\d+\.)*\d+/.exec(process.versions.node)[0];
+
+  await writeFile(path.join(__dirname, ".nvmrc"), `${nodeVersion}\n`);
+
+  console.log("Node version lock built…");
+}
+
 async function buildWebSite() {
+  let buildNodeVersionLockPromise = buildNodeVersionLock();
   const gifs = (await readdir(GIF_FOLDER_PATH)).filter(fileName => fileName.endsWith(".gif"));
   let buildGifCount = 0;
   let startTime = performance.now();
@@ -79,6 +88,7 @@ async function buildWebSite() {
 
   return Promise.all([
     buildCacheDetailsPromise,
+    buildNodeVersionLockPromise,
     ...emotionBuilds,
 
     (async function() {

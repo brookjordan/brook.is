@@ -7,7 +7,7 @@ export function installServiceworker() {
       addInstallPWAModal(beforeInstallPromptEvent);
     });
 
-    navigator.serviceWorker.register('./service-worker.js', { scope: '../' })
+    navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
       .catch(error => {
         console.warn(`ServiceWorker registration failed: ${error}`);
       });

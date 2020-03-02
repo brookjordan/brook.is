@@ -1,4 +1,5 @@
 const CHILD_PROCESS_COUNT = process.env.SPAWN_COUNT || 10;
+const BASE_URL = process.env.BASE_URL || "https://brook.is";
 
 const promisify = require("util").promisify;
 const fs = require("fs");
@@ -17,19 +18,21 @@ async function buildCacheDetails(emotions) {
   if (process.env.ONLY_INDEX) { return; }
 
   const staticAssets = [
-    "../",
-    "../index.html",
-    "../favicon.ico",
+    "/",
+    "/index.html",
+    "/favicon.ico",
+    "/offline.html",
 
     ...emotions.flatMap(emotion => [
-      //`../${emotion}/index.html`,
-      //`../${emotion}/oembed.json`,
-      //`../__gifs/${emotion}.gif`,
-      `../_jpegs/${emotion}.jpg`,
-      //`../_movs/${emotion}.mp4`,
-      //`../_movs/${emotion}.webm`,
-      // `../_movs_small/${emotion}.mp4`,
-      // `../_movs_small/${emotion}.webm`,
+      `/${emotion}/`,
+      //`/${emotion}/index.html`,
+      //`/${emotion}/oembed.json`,
+      //`/__gifs/${emotion}.gif`,
+      `/_jpegs/${emotion}.jpg`,
+      //`/_movs/${emotion}.mp4`,
+      //`/_movs/${emotion}.webm`,
+      // `/_movs_small/${emotion}.mp4`,
+      // `/_movs_small/${emotion}.webm`,
     ]),
   ];
 

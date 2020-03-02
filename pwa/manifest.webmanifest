@@ -6,8 +6,8 @@
   "description": "Find out how Brook’s feeling today.",
 
   "- - DON’T EDIT BELOW HERE": "Unless you know what you’re doing - -",
-  "start_url": "../",
-  "scope": "../",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "icons": [
     {

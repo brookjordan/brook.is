@@ -1,5 +1,4 @@
 const EMOTIONS = process.env.EMOTIONS.split(',');
-const BASE_URL = process.env.BASE_URL || "https://brook.is";
 
 Object.defineProperties(String.prototype, {
   sentenceCased: {
@@ -134,7 +133,7 @@ const writeFile = promisify(fs.writeFile);
       <h1>How is Brook today?</h1>
       <ul><li>${
         EMOTIONS.map(emotion => `
-          <a href="${BASE_URL}/${emotion}" data-emotion="${emotion}">
+          <a href="/${emotion}/" data-emotion="${emotion}">
             <img src="/_jpegs/${emotion}.jpg" loading="lazy">
             <span class="emotion__label">${emotion.humanised}</span>
           </a>

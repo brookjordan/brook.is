@@ -35,10 +35,13 @@ const dominantColors = path => getImageColors(path).then(colors => colors.map(co
 
 const imageSizes = {};
 
+const SRC_FOLDER = path.join(__dirname, "build");
 const BUILD_FOLDER = path.join(__dirname, "build");
 const GIF_BIG_FOLDER_NAME = "__original-gifs";
 const GIF_FOLDER_PATH = path.join(BUILD_FOLDER, GIF_FOLDER_NAME);
+const GIF_SRC_FOLDER_PATH = path.join(SRC_FOLDER, GIF_FOLDER_NAME);
 const GIF_BIG_FOLDER_PATH = path.join(BUILD_FOLDER, GIF_BIG_FOLDER_NAME);
+const GIF_SRC_BIG_FOLDER_PATH = path.join(SRC_FOLDER, GIF_BIG_FOLDER_NAME);
 const JPEG_FOLDER_NAME = "_jpegs";
 const JPEG_FOLDER_PATH = path.join(BUILD_FOLDER, JPEG_FOLDER_NAME);
 const MOVIE_FOLDER_NAME = "__movs";
@@ -48,6 +51,7 @@ const MOVIE_SMALL_FOLDER_PATH = path.join(BUILD_FOLDER, MOVIE_SMALL_FOLDER_NAME)
 
 const GIF_BIG_PATH = path.join(GIF_BIG_FOLDER_PATH, `${EMOTION}.gif`);
 const GIF_PATH = path.join(GIF_FOLDER_PATH, `${EMOTION}.gif`);
+const GIF_SRC_PATH = path.join(GIF_SRC_FOLDER_PATH, `${EMOTION}.gif`);
 const JPEG_PATH = path.join(JPEG_FOLDER_PATH, `${EMOTION}.jpg`);
 const MOVIE_PATH = path.join(MOVIE_FOLDER_PATH, `${EMOTION}`);
 const MOVIE_SMALL_PATH = path.join(MOVIE_SMALL_FOLDER_PATH, `${EMOTION}`);
@@ -66,7 +70,7 @@ async function buildJpeg() {
     if (!await exists(JPEG_FOLDER_PATH)) {
       await mkdir(JPEG_FOLDER_PATH);
     }
-    let gifImage = await jimp.read(GIF_PATH);
+    let gifImage = await jimp.read(GIF_SRC_PATH);
     return gifImage.quality(80).write(JPEG_PATH);
   } catch (error) {
     console.log(`JPEG build error:\n${error}`);

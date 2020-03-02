@@ -40,9 +40,9 @@ const GIF_FOLDER_PATH = path.join(__dirname, GIF_FOLDER_NAME);
 const GIF_BIG_FOLDER_PATH = path.join(__dirname, GIF_BIG_FOLDER_NAME);
 const JPEG_FOLDER_NAME = "_jpegs";
 const JPEG_FOLDER_PATH = path.join(__dirname, JPEG_FOLDER_NAME);
-const MOVIE_FOLDER_NAME = "_movs";
+const MOVIE_FOLDER_NAME = "__movs";
 const MOVIE_FOLDER_PATH = path.join(__dirname, MOVIE_FOLDER_NAME);
-const MOVIE_SMALL_FOLDER_NAME = "_movs_small";
+const MOVIE_SMALL_FOLDER_NAME = "__movs_small";
 const MOVIE_SMALL_FOLDER_PATH = path.join(__dirname, MOVIE_SMALL_FOLDER_NAME);
 
 const GIF_BIG_PATH = path.join(GIF_BIG_FOLDER_PATH, `${EMOTION}.gif`);

@@ -1,9 +1,7 @@
 node_modules
 *.jpg
-*.mp4
-*.webm
 
-# files that don’s start with double underscore…
+# directories that don’s start with double underscore…
 [^_][^_]*/
 # … except
 !pwa

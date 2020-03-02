@@ -147,10 +147,10 @@ const writeFile = promisify(fs.writeFile);
             let sourceMp4 = document.createElement("source");
             let sourceWebm = document.createElement("source");
 
-            sourceMp4.src = \`/_movs_small/\${link.getAttribute("data-emotion")}.mp4\`;
+            sourceMp4.src = \`/__movs_small/\${link.getAttribute("data-emotion")}.mp4\`;
             sourceMp4.type = "video/mp4";
 
-            sourceWebm.src = \`/_movs_small/\${link.getAttribute("data-emotion")}.webm\`;
+            sourceWebm.src = \`/__movs_small/\${link.getAttribute("data-emotion")}.webm\`;
             sourceWebm.type = "video/webm";
 
             video.muted = "muted";

@@ -29,10 +29,10 @@ async function buildCacheDetails(emotions) {
       //`/${emotion}/oembed.json`,
       //`/__gifs/${emotion}.gif`,
       `/_jpegs/${emotion}.jpg`,
-      //`/_movs/${emotion}.mp4`,
-      //`/_movs/${emotion}.webm`,
-      // `/_movs_small/${emotion}.mp4`,
-      // `/_movs_small/${emotion}.webm`,
+      //`/__movs/${emotion}.mp4`,
+      //`/__movs/${emotion}.webm`,
+      // `/__movs_small/${emotion}.mp4`,
+      // `/__movs_small/${emotion}.webm`,
     ]),
   ];
 

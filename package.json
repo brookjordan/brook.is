@@ -17,6 +17,9 @@
   "bugs": {
     "url": "https://github.com/brookjordan/brook.is/issues"
   },
+  "engines": {
+    "node": ">=11.0.0"
+  },
   "homepage": "https://github.com/brookjordan/brook.is#readme",
   "devDependencies": {
     "fluent-ffmpeg": "^2.1.2",

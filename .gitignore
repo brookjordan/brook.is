@@ -1,9 +1,1 @@
 node_modules
-*.jpg
-
-# directories that don’s start with double underscore…
-[^_][^_]*/
-# … except
-!pwa
-
-index.html

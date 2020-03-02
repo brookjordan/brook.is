@@ -6,13 +6,41 @@ const fs = require("fs");
 const path = require("path");
 const { performance } = require("perf_hooks");
 const readdir = promisify(fs.readdir);
+const mkdir = promisify(fs.mkdir);
+const stat = promisify(fs.stat);
 const writeFile = promisify(fs.writeFile);
+const { ncp } = require("ncp");
 const spawnBashProcess = require("./spawn-bash-process.js");
 
 const GIF_FOLDER_NAME = "__gifs";
-const GIF_FOLDER_PATH = path.join(__dirname, GIF_FOLDER_NAME);
+const GIF_FOLDER_PATH = path.join(__dirname, "src", GIF_FOLDER_NAME);
 
 const childProcesses = Array.from({ length: CHILD_PROCESS_COUNT }, () => spawnBashProcess());
+
+function exists(path) {
+  return stat(path).catch(() => false);
+}
+
+function dupeSrcFolder() {
+  return new Promise((resolve, reject) => {
+    ncp(
+      path.join(__dirname, "src"),
+      path.join(__dirname, "build"),
+      {
+        filter() {
+          return true;
+        },
+      },
+      error => {
+        if (error) {
+          reject(error);
+        }
+        resolve();
+        console.log("src folder cloned…");
+      },
+    );
+  });
+}
 
 async function buildCacheDetails(emotions) {
   if (process.env.ONLY_INDEX) { return; }
@@ -28,7 +56,7 @@ async function buildCacheDetails(emotions) {
       //`/${emotion}/index.html`,
       //`/${emotion}/oembed.json`,
       //`/__gifs/${emotion}.gif`,
-      `/_jpegs/${emotion}.jpg`,
+      `/__jpegs/${emotion}.jpg`,
       //`/__movs/${emotion}.mp4`,
       //`/__movs/${emotion}.webm`,
       // `/__movs_small/${emotion}.mp4`,
@@ -36,8 +64,11 @@ async function buildCacheDetails(emotions) {
     ]),
   ];
 
-  await writeFile(path.join(__dirname, "pwa", "cache-details.js"), `
-    const cacheName = "squirish-v1";
+  if (!await exists(path.join(__dirname, "build", "pwa"))) {
+    await mkdir(path.join(__dirname, "build", "pwa"), { recursive: true });
+  }
+  await writeFile(path.join(__dirname, "build", "pwa", "cache-details.js"), `
+    const cacheName = "brook-is-v1";
     const staticAssets = ${JSON.stringify(staticAssets, null, 2)};
   `);
 
@@ -53,6 +84,10 @@ async function buildNodeVersionLock(emotions) {
 }
 
 async function buildWebSite() {
+  if (!exists(path.join(__dirname, "build"))) {
+    await mkdir(path.join(__dirname, "build"));
+  }
+
   let buildNodeVersionLockPromise = buildNodeVersionLock();
   const gifs = (await readdir(GIF_FOLDER_PATH)).filter(fileName => fileName.endsWith(".gif"));
   let buildGifCount = 0;
@@ -92,6 +127,7 @@ async function buildWebSite() {
   return Promise.all([
     buildCacheDetailsPromise,
     buildNodeVersionLockPromise,
+    dupeSrcFolder(),
     ...emotionBuilds,
 
     (async function() {

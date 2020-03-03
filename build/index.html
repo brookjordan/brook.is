@@ -24,6 +24,45 @@
         }
         li {
           display: block;
+          position: relative;
+        }
+        .share-button {
+          padding: 10px 20px;
+          margin: 0;
+          border: 0;
+          border-radius: 5px;
+          -webkit-appearance: none;
+          -mox-appearance: n;
+          background: white;
+          color: inherit;
+          font: inherit;
+          font: inherit;
+          font-size: 16px;
+          font-family: sans-serif;
+          opacity: 0.1;
+          will-change: transform;
+          transition: opacity 0.15s;
+          cursor: pointer;
+        }
+        li > .share-button {
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          z-index: 1;
+          opacity: 0;
+        }
+        li:hover > .share-button {
+          opacity: 0.5;
+        }
+        li:hover > .share-button:hover {
+          opacity: 1;
+        }
+        @media (hover: none) {
+          li > .share-button {
+            bottom: 15px;
+            right: 15px;
+            opacity: 0.5;
+          }
         }
         a {
           position: relative;
@@ -384,28 +423,7 @@
           </a>
         </li></ul>
 
-      <script>
-        [...document.querySelectorAll("[data-emotion]")].forEach(link => {
-          link.parentNode.addEventListener("mouseenter", () => {
-            let video = document.createElement("video");
-            let sourceMp4 = document.createElement("source");
-            let sourceWebm = document.createElement("source");
-
-            sourceMp4.src = `/__movs_small/${link.getAttribute("data-emotion")}.mp4`;
-            sourceMp4.type = "video/mp4";
-
-            sourceWebm.src = `/__movs_small/${link.getAttribute("data-emotion")}.webm`;
-            sourceWebm.type = "video/webm";
-
-            video.muted = "muted";
-            video.autoplay = "autoplay";
-            video.loop = "loop";
-            video.append(sourceMp4);
-            video.append(sourceWebm);
-            link.insertBefore(video, link.querySelector(".emotion__label"));
-          }, { once: true });
-        });
-      </script>
+      <script async src="data:application/japascript;base64,IFsuLi5kb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJbZGF0YS1lbW90aW9uXSIpXS5mb3JFYWNoKGxpbmsgPT4geyBsaW5rLnBhcmVudE5vZGUuYWRkRXZlbnRMaXN0ZW5lcigibW91c2VlbnRlciIsICgpID0+IHsgbGV0IHZpZGVvID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgidmlkZW8iKTsgbGV0IHNvdXJjZU1wNCA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoInNvdXJjZSIpOyBsZXQgc291cmNlV2VibSA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoInNvdXJjZSIpOyBzb3VyY2VNcDQuc3JjID0gYC9fX21vdnNfc21hbGwvJHtsaW5rLmdldEF0dHJpYnV0ZSgiZGF0YS1lbW90aW9uIil9Lm1wNGA7IHNvdXJjZU1wNC50eXBlID0gInZpZGVvL21wNCI7IHNvdXJjZVdlYm0uc3JjID0gYC9fX21vdnNfc21hbGwvJHtsaW5rLmdldEF0dHJpYnV0ZSgiZGF0YS1lbW90aW9uIil9LndlYm1gOyBzb3VyY2VXZWJtLnR5cGUgPSAidmlkZW8vd2VibSI7IHZpZGVvLm11dGVkID0gIm11dGVkIjsgdmlkZW8uYXV0b3BsYXkgPSAiYXV0b3BsYXkiOyB2aWRlby5sb29wID0gImxvb3AiOyB2aWRlby5hcHBlbmQoc291cmNlTXA0KTsgdmlkZW8uYXBwZW5kKHNvdXJjZVdlYm0pOyBsaW5rLmluc2VydEJlZm9yZSh2aWRlbywgbGluay5xdWVyeVNlbGVjdG9yKCIuZW1vdGlvbl9fbGFiZWwiKSk7IH0sIHsgb25jZTogdHJ1ZSB9KTsgbGV0IHNoYXJlQnV0dG9uID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnYnV0dG9uJyk7IHNoYXJlQnV0dG9uLmNsYXNzTGlzdC5hZGQoInNoYXJlLWJ1dHRvbiIpOyBzaGFyZUJ1dHRvbi5pbm5lclRleHQgPSAiU2hhcmUiOyBpZiAoInNoYXJlIiBpbiB3aW5kb3cubmF2aWdhdG9yKSB7IHNoYXJlQnV0dG9uLmFkZEV2ZW50TGlzdGVuZXIoJ2NsaWNrJywgZXZlbnQgPT4geyBldmVudC5wcmV2ZW50RGVmYXVsdCgpOyB3aW5kb3cubmF2aWdhdG9yLnNoYXJlKHsgdXJsOiBsaW5rLmhyZWYsIHRleHQ6ICIiLCB0aXRsZTogIiIsIH0pOyB9KTsgfSBlbHNlIHsgc2hhcmVCdXR0b24uYWRkRXZlbnRMaXN0ZW5lcignY2xpY2snLCBldmVudCA9PiB7IGV2ZW50LnByZXZlbnREZWZhdWx0KCk7IHByb21wdCgiQ29weSB0aGlzIGxpbmsgdG8gc2VuZCB5b3VyIGZyaWVuZHM6IiwgbGluay5ocmVmKTsgfSk7IH0gbGluay5wYXJlbnROb2RlLmFwcGVuZENoaWxkKHNoYXJlQnV0dG9uKTsgfSk7IA=="></script>
       <script src="./pwa/init.js" defer type="module"></script>
     </body>
   </html>

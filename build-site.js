@@ -30,6 +30,7 @@ function dupeSrcFolder() {
         filter() {
           return true;
         },
+        clobber: false,
       },
       error => {
         if (error) {

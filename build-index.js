@@ -48,6 +48,45 @@ const writeFile = promisify(fs.writeFile);
         }
         li {
           display: block;
+          position: relative;
+        }
+        .share-button {
+          padding: 10px 20px;
+          margin: 0;
+          border: 0;
+          border-radius: 5px;
+          -webkit-appearance: none;
+          -mox-appearance: n;
+          background: white;
+          color: inherit;
+          font: inherit;
+          font: inherit;
+          font-size: 16px;
+          font-family: sans-serif;
+          opacity: 0.1;
+          will-change: transform;
+          transition: opacity 0.15s;
+          cursor: pointer;
+        }
+        li > .share-button {
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          z-index: 1;
+          opacity: 0;
+        }
+        li:hover > .share-button {
+          opacity: 0.5;
+        }
+        li:hover > .share-button:hover {
+          opacity: 1;
+        }
+        @media (hover: none) {
+          li > .share-button {
+            bottom: 15px;
+            right: 15px;
+            opacity: 0.5;
+          }
         }
         a {
           position: relative;
@@ -140,7 +179,7 @@ const writeFile = promisify(fs.writeFile);
         `).join("</li><li>")
       }</li></ul>
 
-      <script>
+      <script async src="data:application/japascript;base64,${Buffer.from(`
         [...document.querySelectorAll("[data-emotion]")].forEach(link => {
           link.parentNode.addEventListener("mouseenter", () => {
             let video = document.createElement("video");
@@ -160,8 +199,30 @@ const writeFile = promisify(fs.writeFile);
             video.append(sourceWebm);
             link.insertBefore(video, link.querySelector(".emotion__label"));
           }, { once: true });
+
+          let shareButton = document.createElement('button');
+          shareButton.classList.add("share-button");
+          shareButton.innerText = "Share";
+
+          if ("share" in window.navigator) {
+            shareButton.addEventListener('click', event => {
+              event.preventDefault();
+              window.navigator.share({
+                url: link.href,
+                text: "",
+                title: "",
+              });
+            });
+          } else {
+            shareButton.addEventListener('click', event => {
+              event.preventDefault();
+              prompt("Copy this link to send your friends:", link.href);
+            });
+          }
+
+          link.parentNode.appendChild(shareButton);
         });
-      </script>
+      `.replace(/\s+/g, " ")).toString('base64')}"></script>
       <script src="./pwa/init.js" defer type="module"></script>
     </body>
   </html>`);

@@ -313,13 +313,13 @@ async function buildMetaTags(EMOTION) {
   />
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org/",
-    "@type": "ImageObject",
-    "url": "${JPEG_URL}",
-    "height": ${width},
-    "width": ${height}
-  }
+    {
+      "@context": "https://schema.org/",
+      "@type": "ImageObject",
+      "url": "${JPEG_URL}",
+      "height": ${width},
+      "width": ${height}
+    }
   </script>`;
 }
 
@@ -398,6 +398,31 @@ async function buildPageHTML(EMOTION) {
         object-fit: contain;
         will-change: transform;
       }
+
+      .share-button {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        padding: 10px 20px;
+        margin: 0;
+        border: 0;
+        border-top-left-radius: 25px;
+        -webkit-appearance: none;
+        -mox-appearance: n;
+        background: white;
+        color: inherit;
+        font: inherit;
+        font: inherit;
+        font-size: 30px;
+        font-family: sans-serif;
+        opacity: 0.1;
+        will-change: transform;
+        transition: opacity 0.15s;
+        cursor: pointer;
+      }
+      .share-button:hover {
+        opacity: 1;
+      }
     </style>
   </head>
 
@@ -424,6 +449,30 @@ async function buildPageHTML(EMOTION) {
     <span itemprop="thumbnail" itemscope itemtype="https://schema.org/ImageObject">
       <link itemprop="url" href="${JPEG_URL}">
     </span>
+
+    <script async src="data:application/japascript;base64,${Buffer.from(`
+      let shareButton = document.createElement('button');
+      shareButton.classList.add("share-button");
+      shareButton.innerText = "Share";
+
+      if ("share" in window.navigator) {
+        shareButton.addEventListener('click', event => {
+          event.preventDefault();
+          window.navigator.share({
+            url: location.href,
+            text: "",
+            title: "",
+          });
+        });
+      } else {
+        shareButton.addEventListener('click', event => {
+          event.preventDefault();
+          prompt("Copy this link to send your friends:", location.href);
+        });
+      }
+
+      document.body.appendChild(shareButton);
+    `.replace(/\s+/g, " ")).toString('base64')}"></script>
   </body>
 </html>`;
 }

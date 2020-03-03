@@ -21,6 +21,7 @@ export function addInstallPWAModal(beforeInstallPromptEvent) {
         width: 100%;
         font-size: 1.5em;
         border-radius: 3px;
+        background: white;
       "
     >
       Add to my home&nbsp;screen
@@ -32,9 +33,10 @@ export function addInstallPWAModal(beforeInstallPromptEvent) {
       style="
         width: 100%;
         font-size: 1.5em;
-        border-radius: 3px;
         margin-left: 0.5em;
         color: #999;
+        background: white;
+        border: none;
       "
     >
       No thanks.

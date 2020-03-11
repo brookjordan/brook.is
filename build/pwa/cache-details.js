@@ -87,6 +87,8 @@
   "/__jpegs/pessimistic.jpg",
   "/playing-the-smallest-violin-just-for-you/",
   "/__jpegs/playing-the-smallest-violin-just-for-you.jpg",
+  "/pretending-to-believe-you/",
+  "/__jpegs/pretending-to-believe-you.jpg",
   "/rolling-his-eyes/",
   "/__jpegs/rolling-his-eyes.jpg",
   "/sad/",

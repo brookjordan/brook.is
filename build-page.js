@@ -42,7 +42,7 @@ const GIF_FOLDER_PATH = path.join(BUILD_FOLDER, GIF_FOLDER_NAME);
 const GIF_SRC_FOLDER_PATH = path.join(SRC_FOLDER, GIF_FOLDER_NAME);
 const GIF_BIG_FOLDER_PATH = path.join(BUILD_FOLDER, GIF_BIG_FOLDER_NAME);
 const GIF_SRC_BIG_FOLDER_PATH = path.join(SRC_FOLDER, GIF_BIG_FOLDER_NAME);
-const JPEG_FOLDER_NAME = "_jpegs";
+const JPEG_FOLDER_NAME = "__jpegs";
 const JPEG_FOLDER_PATH = path.join(BUILD_FOLDER, JPEG_FOLDER_NAME);
 const MOVIE_FOLDER_NAME = "__movs";
 const MOVIE_FOLDER_PATH = path.join(BUILD_FOLDER, MOVIE_FOLDER_NAME);
@@ -488,9 +488,16 @@ async function buildPageHTML(EMOTION) {
       buildMovSmall(),
       buildMov(),
 
-      buildPageHTML(EMOTION)
-        .then(pageHTML => writeFile(path.join(DIR_PATH, "index.html"), pageHTML))
-        .catch(error => { console.log(error); }),
+      (async function() {
+        let indexFilePath = path.join(DIR_PATH, "index.html");
+        if(await exists(indexFilePath)) { return; }
+        try {
+          let pageHTML = buildPageHTML(EMOTION);
+          writeFile(indexFilePath, pageHTML);
+        } catch (error) {
+          console.log(error);
+        }
+      })(),
 
       buildOembedJSON(EMOTION)
         .then(pageOembedJSON => writeFile(path.join(DIR_PATH, "oembed.json"), pageOembedJSON))

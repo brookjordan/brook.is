@@ -492,8 +492,8 @@ async function buildPageHTML(EMOTION) {
         let indexFilePath = path.join(DIR_PATH, "index.html");
         if(await exists(indexFilePath)) { return; }
         try {
-          let pageHTML = buildPageHTML(EMOTION);
-          writeFile(indexFilePath, pageHTML);
+          let pageHTML = await buildPageHTML(EMOTION);
+          await writeFile(indexFilePath, pageHTML);
         } catch (error) {
           console.log(error);
         }

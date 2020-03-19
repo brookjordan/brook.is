@@ -33,8 +33,6 @@ const jimp = require("jimp");
 const getImageColors = require("get-image-colors");
 const dominantColors = path => getImageColors(path).then(colors => colors.map(color => color.css()));
 
-const imageSizes = {};
-
 const SRC_FOLDER = path.join(__dirname, "build");
 const BUILD_FOLDER = path.join(__dirname, "build");
 const GIF_BIG_FOLDER_NAME = "__original-gifs";
@@ -64,14 +62,43 @@ function exists(path) {
   return stat(path).catch(() => false);
 }
 
+let minImageSize = 200;
+function getLegalSize({ width, height } = {}) {
+  let neededResize = false;
+  if (width < minImageSize) {
+    height = height * minImageSize / width;
+    width = 200;
+    neededResize = true;
+  }
+  if (height < minImageSize) {
+    width = width * minImageSize / height;
+    height = 200;
+    neededResize = true;
+  }
+  return { width, height, neededResize };
+}
+
 async function buildJpeg() {
   try {
-    if (await exists(JPEG_PATH)) { return null; }
+    if (await exists(JPEG_PATH)) {
+      return await getImageSize(JPEG_PATH);
+    }
     if (!await exists(JPEG_FOLDER_PATH)) {
       await mkdir(JPEG_FOLDER_PATH);
     }
     let gifImage = await jimp.read(GIF_SRC_PATH);
-    return gifImage.quality(80).write(JPEG_PATH);
+    let requiredSize = getLegalSize({
+      width: gifImage.bitmap.width,
+      height: gifImage.bitmap.height,
+    });
+    if (requiredSize.neededResize) {
+      gifImage = gifImage.scaleToFit(Math.ceil(requiredSize.width), Math.ceil(requiredSize.height));
+    }
+    await gifImage.quality(80).write(JPEG_PATH);
+    return {
+      width: gifImage.bitmap.width,
+      height: gifImage.bitmap.height,
+    }
   } catch (error) {
     console.log(`JPEG build error:\n${error}`);
   }
@@ -183,36 +210,19 @@ async function buildMovSmall() {
   }
 }
 
-let minImageSize = 200;
-function getImageSize(EMOTION) {
-  // { width, height }
-  if (imageSizes[EMOTION]) {
-    return Promise.resolve(imageSizes[EMOTION]);
-  }
+function getImageSize(imagePath) {
   return new Promise((resolve, reject) => {
-    imageSize(GIF_PATH, (error, dimensions) => {
+    imageSize(imagePath, (error, dimensions) => {
       if (error) {
         reject(error);
       } else {
-        let { width, height } = dimensions;
-        if (width < minImageSize) {
-          height = Math.round(height * (minImageSize / width));
-          width = minImageSize;
-        }
-        if (height < minImageSize) {
-          width = Math.round(width * (minImageSize / height));
-          height = minImageSize;
-        }
-        let newDimensions = { width, height };
-        imageSizes[EMOTION] = newDimensions;
-        resolve(newDimensions);
+        resolve(dimensions);
       }
     });
   });
 }
-
 async function buildOembedJSON(EMOTION) {
-  const { width, height } = await getImageSize(EMOTION);
+  const { width, height } = await jpegBuildPromise;
   return JSON.stringify({
     width,
     height,
@@ -229,7 +239,7 @@ async function buildOembedJSON(EMOTION) {
 }
 
 async function buildMetaTags(EMOTION) {
-  const { width, height } = await getImageSize(EMOTION);
+  const { width, height } = jpegBuildPromise;
   return `
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">

@@ -241,7 +241,7 @@ async function buildMetaTags(EMOTION) {
     content="${BASE_URL}/${EMOTION}/"/>
   <meta
     property="og:type"
-    content="website"/>
+    content="video.other"/>
   <meta
     property="og:title"
     content="${EMOTION.humanised.sentenceCased}"/>
@@ -257,24 +257,24 @@ async function buildMetaTags(EMOTION) {
     property="og:image"
     content="${JPEG_URL}"/>
   <meta
-    itemprop="image"
     property="og:image:secure_url"
     content="${JPEG_URL}"/>
   <meta
     property="og:image:type"
     content="image/jpeg"/>
   <meta
-    property="og:image:alt"
-    content="Brook is ${EMOTION.humanised}"/>
-  <meta
     property="og:image:width"
     content="${width}"/>
   <meta
     property="og:image:height"
     content="${height}"/>
+  <meta
+    property="og:image:alt"
+    content="Brook is ${EMOTION.humanised}"/>
 
   <meta
-    property="og:video:url"
+    itemprop="video"
+    property="og:video"
     content="${MOVIE_URL}"/>
   <meta
     property="og:video:secure_url"
@@ -290,7 +290,8 @@ async function buildMetaTags(EMOTION) {
     content="${height}"/>
 
   <meta
-    property="og:video:url"
+    itemprop="video"
+    property="og:video"
     content="${GIF_URL}"/>
   <meta
     property="og:video:secure_url"

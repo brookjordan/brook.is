@@ -186,7 +186,7 @@ async function buildMovSmall() {
 function getImageSize(EMOTION) {
   // { width, height }
   if (imageSizes[EMOTION]) {
-    return imageSizes[EMOTION];
+    return Promise.resolve(imageSizes[EMOTION]);
   }
   return new Promise((resolve, reject) => {
     imageSize(GIF_PATH, (error, dimensions) => {
@@ -255,10 +255,10 @@ async function buildMetaTags(EMOTION) {
   <meta
     itemprop="image"
     property="og:image"
-    content="${JPEG_URL}"/>
+    content="${BASE_URL}${JPEG_URL}"/>
   <meta
     property="og:image:secure_url"
-    content="${JPEG_URL}"/>
+    content="${BASE_URL}${JPEG_URL}"/>
   <meta
     property="og:image:type"
     content="image/jpeg"/>
@@ -275,10 +275,10 @@ async function buildMetaTags(EMOTION) {
   <meta
     itemprop="video"
     property="og:video"
-    content="${MOVIE_URL}"/>
+    content="${BASE_URL}${MOVIE_URL}"/>
   <meta
     property="og:video:secure_url"
-    content="${MOVIE_URL}"/>
+    content="${BASE_URL}${MOVIE_URL}"/>
   <meta
     property="og:video:type"
     content="video/mp4"/>
@@ -292,10 +292,10 @@ async function buildMetaTags(EMOTION) {
   <meta
     itemprop="video"
     property="og:video"
-    content="${GIF_URL}"/>
+    content="${BASE_URL}${GIF_URL}"/>
   <meta
     property="og:video:secure_url"
-    content="${GIF_URL}"/>
+    content="${BASE_URL}${GIF_URL}"/>
   <meta
     property="og:video:type"
     content="image/gif"/>
@@ -313,15 +313,17 @@ async function buildMetaTags(EMOTION) {
     title="Brook is ${EMOTION.humanised}"
   />
 
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org/",
-      "@type": "ImageObject",
-      "url": "${JPEG_URL}",
-      "height": ${width},
-      "width": ${height}
-    }
-  </script>`;
+  <script type="application/ld+json">${JSON.stringify({
+    "@context": "https://schema.org/",
+    "@type": "ImageObject",
+    encodingFormat: "image/gif",
+    url: `${BASE_URL}${GIF_URL}`,
+    contentUrl: `${BASE_URL}${GIF_URL}`,
+    height,
+    width,
+    caption: `Brook is ${EMOTION.humanised}`,
+    representativeOfPage: true,
+  })}</script>`;
 }
 
 async function getDominantColors() {
@@ -380,7 +382,7 @@ async function buildPageHTML(EMOTION) {
         height: 5%;
         background:
           50% 50% / cover
-          url("${JPEG_URL}")
+          url("${BASE_URL}")
         ;
         filter: blur(0.1vmax);
         opacity: 0.5;

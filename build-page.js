@@ -239,7 +239,7 @@ async function buildOembedJSON(EMOTION) {
 }
 
 async function buildMetaTags(EMOTION) {
-  const { width, height } = jpegBuildPromise;
+  const { width, height } = await jpegBuildPromise;
   return `
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">

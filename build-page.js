@@ -23,6 +23,7 @@ const fs = require("fs");
 const path = require("path");
 const imageSize = require("image-size");
 const movieBuilder = require("fluent-ffmpeg");
+var minifyHTML = require("html-minifier").minify;
 if (process.env.FFMPEG_BINARY) {
   movieBuilder.setFfmpegPath(path.join(__dirname, process.env.FFMPEG_BINARY));
 }
@@ -475,12 +476,12 @@ async function buildPageHTML(EMOTION) {
     </span>
 
     <script async src="data:application/japascript;base64,${Buffer.from(`
-      let shareButton = document.createElement('button');
+      let shareButton = document.createElement("button");
       shareButton.classList.add("share-button");
       shareButton.innerText = "Share";
 
       if ("share" in window.navigator) {
-        shareButton.addEventListener('click', event => {
+        shareButton.addEventListener("click", event => {
           event.preventDefault();
           window.navigator.share({
             url: location.href,
@@ -489,14 +490,14 @@ async function buildPageHTML(EMOTION) {
           });
         });
       } else {
-        shareButton.addEventListener('click', event => {
+        shareButton.addEventListener("click", event => {
           event.preventDefault();
           prompt("Copy this link to send your friends:", location.href);
         });
       }
 
       document.body.appendChild(shareButton);
-    `.replace(/\s+/g, " ")).toString('base64')}"></script>
+    `.replace(/\s+/g, " ")).toString("base64")}"></script>
   </body>
 </html>`;
 }
@@ -516,7 +517,12 @@ async function buildPageHTML(EMOTION) {
         let indexFilePath = path.join(DIR_PATH, "index.html");
         if(await exists(indexFilePath)) { return; }
         try {
-          let pageHTML = await buildPageHTML(EMOTION);
+          let pageHTML = minifyHTML(await buildPageHTML(EMOTION), {
+            collapseWhitespace: true,
+            minifyCSS: true,
+            removeAttributeQuotes: true,
+            preserveLineBreaks: true,
+          });
           await writeFile(indexFilePath, pageHTML);
         } catch (error) {
           console.log(error);

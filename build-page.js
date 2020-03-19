@@ -183,6 +183,7 @@ async function buildMovSmall() {
   }
 }
 
+let minImageSize = 200;
 function getImageSize(EMOTION) {
   // { width, height }
   if (imageSizes[EMOTION]) {
@@ -193,8 +194,18 @@ function getImageSize(EMOTION) {
       if (error) {
         reject(error);
       } else {
-        imageSizes[EMOTION] = dimensions;
-        resolve(dimensions);
+        let { width, height } = dimensions;
+        if (width < minImageSize) {
+          height = Math.round(height * (minImageSize / width));
+          width = minImageSize;
+        }
+        if (height < minImageSize) {
+          width = Math.round(width * (minImageSize / height));
+          height = minImageSize;
+        }
+        let newDimensions = { width, height };
+        imageSizes[EMOTION] = newDimensions;
+        resolve(newDimensions);
       }
     });
   });

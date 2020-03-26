@@ -1,5 +1,6 @@
 const CHILD_PROCESS_COUNT = process.env.SPAWN_COUNT || 10;
 const BASE_URL = process.env.BASE_URL || "https://brook.is";
+require('events').EventEmitter.defaultMaxListeners = 20;
 
 const promisify = require("util").promisify;
 const fs = require("fs");

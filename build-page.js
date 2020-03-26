@@ -424,19 +424,18 @@ async function buildPageHTML(EMOTION) {
         will-change: transform;
       }
 
+      .back-link,
       .share-button {
+        display: block;
         position: fixed;
-        bottom: 0;
-        right: 0;
         padding: 10px 20px;
         margin: 0;
         border: 0;
-        border-top-left-radius: 25px;
         -webkit-appearance: none;
-        -mox-appearance: n;
+        -moz-appearance: none;
+        appearance: none;
         background: white;
         color: inherit;
-        font: inherit;
         font: inherit;
         font-size: 30px;
         font-family: sans-serif;
@@ -444,9 +443,22 @@ async function buildPageHTML(EMOTION) {
         will-change: transform;
         transition: opacity 0.15s;
         cursor: pointer;
+        text-decoration: none;
       }
+      .back-link {
+        top: 0;
+        left: 0;
+        border-bottom-right-radius: 25px;
+      }
+      .share-button {
+        bottom: 0;
+        right: 0;
+        border-top-left-radius: 25px;
+      }
+      .back-link:hover,
       .share-button:hover {
         opacity: 1;
+        text-decoration: underline;
       }
     </style>
   </head>
@@ -480,6 +492,11 @@ async function buildPageHTML(EMOTION) {
       shareButton.classList.add("share-button");
       shareButton.innerText = "Share";
 
+      let backLink = document.createElement("a");
+      backLink.classList.add("back-link");
+      backLink.href = "/";
+      backLink.innerText = "…";
+
       if ("share" in window.navigator) {
         shareButton.addEventListener("click", event => {
           event.preventDefault();
@@ -496,6 +513,7 @@ async function buildPageHTML(EMOTION) {
         });
       }
 
+      document.body.appendChild(backLink);
       document.body.appendChild(shareButton);
     `.replace(/\s+/g, " ")).toString("base64")}"></script>
   </body>

@@ -9,7 +9,7 @@ ncp(
       return true;
     },
   },
-  error => {
+  (error) => {
     if (error) {
       return console.error(error);
     }

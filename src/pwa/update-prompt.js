@@ -56,12 +56,15 @@ export function addUpdateModal() {
     </button>
   `;
 
-  let killPrompt = () => { document.body.removeChild(promptModal); };
-  promptModal.querySelector(".do-nothing").addEventListener("click", killPrompt);
-  promptModal.querySelector(".reload-page")
-    .addEventListener("click", () => {
-      location.reload();
-    });
+  let killPrompt = () => {
+    document.body.removeChild(promptModal);
+  };
+  promptModal
+    .querySelector(".do-nothing")
+    .addEventListener("click", killPrompt);
+  promptModal.querySelector(".reload-page").addEventListener("click", () => {
+    location.reload();
+  });
 
   document.body.appendChild(promptModal);
 }

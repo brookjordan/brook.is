@@ -1,16 +1,20 @@
-const EMOTIONS = process.env.EMOTIONS.split(',');
+const EMOTIONS = process.env.EMOTIONS.split(",");
 
 Object.defineProperties(String.prototype, {
   sentenceCased: {
     get() {
-      if (this.length === 0) { return this.toString(); }
-      return `${this.slice(0,1).toUpperCase()}${this.slice(1)}`;
+      if (this.length === 0) {
+        return this.toString();
+      }
+      return `${this.slice(0, 1).toUpperCase()}${this.slice(1)}`;
     },
   },
 
   humanised: {
     get() {
-      if (this.length === 0) { return this.toString(); }
+      if (this.length === 0) {
+        return this.toString();
+      }
       return this.replace(/-/g, " ");
     },
   },
@@ -21,8 +25,10 @@ const fs = require("fs");
 const path = require("path");
 const writeFile = promisify(fs.writeFile);
 
-(async function() {
-  await writeFile(path.join(__dirname, "build", "index.html"), `<html>
+(async function () {
+  await writeFile(
+    path.join(__dirname, "build", "index.html"),
+    `<html>
     <head>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -170,16 +176,17 @@ const writeFile = promisify(fs.writeFile);
     </head>
     <body>
       <h1>How is Brook today?</h1>
-      <ul><li>${
-        EMOTIONS.map(emotion => `
+      <ul><li>${EMOTIONS.map(
+        (emotion) => `
           <a href="/${emotion}/" data-emotion="${emotion}">
             <img src="/__jpegs/${emotion}.jpg" loading="lazy">
             <span class="emotion__label">${emotion.humanised}</span>
           </a>
-        `).join("</li><li>")
-      }</li></ul>
+        `,
+      ).join("</li><li>")}</li></ul>
 
-      <script async src="data:application/japascript;base64,${Buffer.from(`
+      <script async src="data:application/japascript;base64,${Buffer.from(
+        `
         [...document.querySelectorAll("[data-emotion]")].forEach(link => {
           link.parentNode.addEventListener("mouseenter", () => {
             let video = document.createElement("video");
@@ -222,9 +229,11 @@ const writeFile = promisify(fs.writeFile);
 
           link.parentNode.appendChild(shareButton);
         });
-      `.replace(/\s+/g, " ")).toString('base64')}"></script>
+      `.replace(/\s+/g, " "),
+      ).toString("base64")}"></script>
       <script src="./pwa/init.js" defer type="module"></script>
     </body>
-  </html>`);
+  </html>`,
+  );
   return;
-}());
+})();

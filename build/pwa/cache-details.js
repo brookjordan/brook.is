@@ -1,6 +1,5 @@
-
-    const cacheName = "brook-is-v1";
-    const staticAssets = [
+const cacheName = "brook-is-v1";
+const staticAssets = [
   "/",
   "/index.html",
   "/favicon.ico",
@@ -236,6 +235,5 @@
   "/working-hard/",
   "/__jpegs/working-hard.jpg",
   "/worried/",
-  "/__jpegs/worried.jpg"
+  "/__jpegs/worried.jpg",
 ];
-  

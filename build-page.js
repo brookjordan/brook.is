@@ -8,7 +8,7 @@ Object.defineProperties(String.prototype, {
       if (this.length === 0) {
         return this.toString();
       }
-      return `${this.slice(0,1).toUpperCase()}${this.slice(1)}`;
+      return `${this.slice(0, 1).toUpperCase()}${this.slice(1)}`;
     },
   },
 
@@ -36,7 +36,8 @@ const stat = promisify(fs.stat);
 const writeFile = promisify(fs.writeFile);
 const jimp = require("jimp");
 const getImageColors = require("get-image-colors");
-const dominantColors = path => getImageColors(path).then(colors => colors.map(color => color.css()));
+const dominantColors = (path) =>
+  getImageColors(path).then((colors) => colors.map((color) => color.css()));
 
 const SRC_FOLDER = path.join(__dirname, "build");
 const BUILD_FOLDER = path.join(__dirname, "build");
@@ -50,7 +51,10 @@ const JPEG_FOLDER_PATH = path.join(BUILD_FOLDER, JPEG_FOLDER_NAME);
 const MOVIE_FOLDER_NAME = "__movs";
 const MOVIE_FOLDER_PATH = path.join(BUILD_FOLDER, MOVIE_FOLDER_NAME);
 const MOVIE_SMALL_FOLDER_NAME = "__movs_small";
-const MOVIE_SMALL_FOLDER_PATH = path.join(BUILD_FOLDER, MOVIE_SMALL_FOLDER_NAME);
+const MOVIE_SMALL_FOLDER_PATH = path.join(
+  BUILD_FOLDER,
+  MOVIE_SMALL_FOLDER_NAME,
+);
 
 const GIF_BIG_PATH = path.join(GIF_BIG_FOLDER_PATH, `${EMOTION}.gif`);
 const GIF_PATH = path.join(GIF_FOLDER_PATH, `${EMOTION}.gif`);
@@ -69,18 +73,15 @@ function exists(path) {
 
 let minImageSize = 200;
 
-function getLegalSize({
-  width,
-  height,
-} = {}) {
+function getLegalSize({ width, height } = {}) {
   let neededResize = false;
   if (width < minImageSize) {
-    height = height * minImageSize / width;
+    height = (height * minImageSize) / width;
     width = 200;
     neededResize = true;
   }
   if (height < minImageSize) {
-    width = width * minImageSize / height;
+    width = (width * minImageSize) / height;
     height = 200;
     neededResize = true;
   }
@@ -96,7 +97,7 @@ async function buildJpeg() {
     if (await exists(JPEG_PATH)) {
       return await getImageSize(JPEG_PATH);
     }
-    if (!await exists(JPEG_FOLDER_PATH)) {
+    if (!(await exists(JPEG_FOLDER_PATH))) {
       await mkdir(JPEG_FOLDER_PATH);
     }
     let gifImage = await jimp.read(GIF_SRC_PATH);
@@ -105,13 +106,16 @@ async function buildJpeg() {
       height: gifImage.bitmap.height,
     });
     if (requiredSize.neededResize) {
-      gifImage = gifImage.scaleToFit(Math.ceil(requiredSize.width), Math.ceil(requiredSize.height));
+      gifImage = gifImage.scaleToFit(
+        Math.ceil(requiredSize.width),
+        Math.ceil(requiredSize.height),
+      );
     }
     await gifImage.quality(80).write(JPEG_PATH);
     return {
       width: gifImage.bitmap.width,
       height: gifImage.bitmap.height,
-    }
+    };
   } catch (error) {
     console.log(`JPEG build error:\n${error}`);
   }
@@ -121,7 +125,7 @@ const jpegBuildPromise = buildJpeg();
 
 async function buildMov() {
   try {
-    if (!await exists(MOVIE_FOLDER_PATH)) {
+    if (!(await exists(MOVIE_FOLDER_PATH))) {
       await mkdir(MOVIE_FOLDER_PATH);
     }
     let gifPath;
@@ -143,10 +147,10 @@ async function buildMov() {
           // .toFormat("mp4")
           .videoCodec("mpeg4") // libx264
           .output(videoPath)
-          .on("end", end => {
+          .on("end", (end) => {
             resolve(end);
           })
-          .on("error", error => {
+          .on("error", (error) => {
             reject(error);
           })
           .run();
@@ -164,10 +168,10 @@ async function buildMov() {
           .output(videoPath)
           // .toFormat("webm")
           // .videoCodec("vp9") // libvpx
-          .on("end", end => {
+          .on("end", (end) => {
             resolve(end);
           })
-          .on("error", error => {
+          .on("error", (error) => {
             reject(error);
           })
           .run();
@@ -180,7 +184,7 @@ async function buildMov() {
 
 async function buildMovSmall() {
   try {
-    if (!await exists(MOVIE_SMALL_FOLDER_PATH)) {
+    if (!(await exists(MOVIE_SMALL_FOLDER_PATH))) {
       await mkdir(MOVIE_SMALL_FOLDER_PATH);
     }
     let gifPath;
@@ -204,10 +208,10 @@ async function buildMovSmall() {
           .videoCodec("mpeg4") // libx264
           .withSize("?x150")
           .output(videoPath)
-          .on("end", end => {
+          .on("end", (end) => {
             resolve(end);
           })
-          .on("error", error => {
+          .on("error", (error) => {
             reject(error);
           })
           .run();
@@ -227,10 +231,10 @@ async function buildMovSmall() {
           // .videoCodec("vp9") // libvpx
           .withSize("?x150")
           .output(videoPath)
-          .on("end", end => {
+          .on("end", (end) => {
             resolve(end);
           })
-          .on("error", error => {
+          .on("error", (error) => {
             reject(error);
           })
           .run();
@@ -253,10 +257,7 @@ function getImageSize(imagePath) {
   });
 }
 async function buildOembedJSON(EMOTION) {
-  const {
-    width,
-    height
-  } = await jpegBuildPromise;
+  const { width, height } = await jpegBuildPromise;
   return JSON.stringify({
     width,
     height,
@@ -273,10 +274,7 @@ async function buildOembedJSON(EMOTION) {
 }
 
 async function buildMetaTags(EMOTION) {
-  const {
-    width,
-    height
-  } = await jpegBuildPromise;
+  const { width, height } = await jpegBuildPromise;
   return `
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -391,10 +389,7 @@ async function getDominantColors() {
 
 async function buildPageHTML(EMOTION) {
   const metaTagsPromise = buildMetaTags(EMOTION);
-  let [
-    metaTags,
-    backgroundColors,
-  ] = await Promise.all([
+  let [metaTags, backgroundColors] = await Promise.all([
     metaTagsPromise,
     getDominantColors(),
   ]);
@@ -523,7 +518,8 @@ async function buildPageHTML(EMOTION) {
       <link itemprop="url" href="${JPEG_URL}">
     </span>
 
-    <script async src="data:application/japascript;base64,${Buffer.from(`
+    <script async src="data:application/japascript;base64,${Buffer.from(
+      `
       let shareButton = document.createElement("button");
       shareButton.classList.add("share-button");
       shareButton.innerText = "Share";
@@ -551,13 +547,14 @@ async function buildPageHTML(EMOTION) {
 
       document.body.appendChild(backLink);
       document.body.appendChild(shareButton);
-    `.replace(/\s+/g, " ")).toString("base64")}"></script>
+    `.replace(/\s+/g, " "),
+    ).toString("base64")}"></script>
   </body>
 </html>`;
 }
 
 (async function () {
-  if (!await exists(DIR_PATH)) {
+  if (!(await exists(DIR_PATH))) {
     await mkdir(DIR_PATH);
   }
 
@@ -586,12 +583,14 @@ async function buildPageHTML(EMOTION) {
       })(),
 
       buildOembedJSON(EMOTION)
-      .then(pageOembedJSON => writeFile(path.join(DIR_PATH, "oembed.json"), pageOembedJSON))
-      .catch(error => {
-        console.log(`OEmbed build error:\n${error}`);
-      }),
+        .then((pageOembedJSON) =>
+          writeFile(path.join(DIR_PATH, "oembed.json"), pageOembedJSON),
+        )
+        .catch((error) => {
+          console.log(`OEmbed build error:\n${error}`);
+        }),
     ]);
   } catch (error) {
-    console.log(`Error build assets for ${EMOTION}\n${error}`)
+    console.log(`Error build assets for ${EMOTION}\n${error}`);
   }
-}());
+})();

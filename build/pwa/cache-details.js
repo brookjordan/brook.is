@@ -85,6 +85,8 @@
   "/__jpegs/happy.jpg",
   "/helpful/",
   "/__jpegs/helpful.jpg",
+  "/horny/",
+  "/__jpegs/horny.jpg",
   "/hungry/",
   "/__jpegs/hungry.jpg",
   "/impressed/",

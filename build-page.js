@@ -129,7 +129,7 @@ async function buildMov() {
         movieBuilder(gifPath)
           .withNoAudio()
           .toFormat("mp4")
-          .videoCodec("mpeg4")
+          .videoCodec("libx264") // openh264
           .output(videoPath)
           .on("end", end => { resolve(end); })
           .on("error", error => { reject(error); })
@@ -179,7 +179,7 @@ async function buildMovSmall() {
           .withNoAudio()
           .videoBitrate("16")
           .toFormat("mp4")
-          .videoCodec("mpeg4")
+          .videoCodec("libx264") // openh264
           .withSize("?x150")
           .output(videoPath)
           .on("end", end => { resolve(end); })

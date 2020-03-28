@@ -4,27 +4,71 @@ const PLACEHOLDER_FILE_MAP = {
   html: "offline.html",
 };
 
-async function cacheFetchRequest(request, cache) {
+async function getStreamData(stream) {
+  let reader;
+
   try {
-    let response = await fetch(request);
-    cache.put(request, response.clone());
-    return response;
+    let data = new Uint8Array();
+    if (!stream) { return null; }
+    reader = stream.getReader();
+    if (!reader || !reader.read) { return null; }
+    let done;
+    let value;
+    do {
+      ({ done, value } = await reader.read());
+      if (value) {
+        let newData = new Uint8Array(data.length + value.length);
+        newData.set(data);
+        newData.set(value, data.length);
+        data = newData;
+      }
+    } while (!done);
+    return data;
   } catch (error) {
-    throw "fetch-failed";
+    console.log(error);
+  } finally {
+    reader && reader.releaseLock && reader.releaseLock();
   }
 }
 
-async function cacheFirst(request) {
+async function cacheFetchRequest(request, cache, { clientId } = {}) {
+  let response;
+  try {
+    response = await fetch(request);
+    if (clientId) {
+      Promise.all([
+        clients.get(clientId),
+        cache.match(request)
+          .then(cacheStream => getStreamData(cacheStream.body)),
+        getStreamData(response.clone().body),
+      ])
+        .then(([ client, cacheData, responseData ]) => {
+          if (!cacheData || !responseData) { return; }
+          if (!cacheData.every((value, i) => value === responseData[i])) {
+            client.postMessage({
+              type: "cache expiry"
+            });
+          }
+        });
+    }
+    cache.put(request, response.clone());
+  } catch (error) {
+    throw `fetch failed: ${error}`;
+  }
+
+  return response;
+}
+
+async function cacheFirst({ request, clientId }) {
   let cache = await caches.open(cacheName);
-  let fetchResponse = cacheFetchRequest(request, cache).catch(error => undefined);
+  let fetchResponse = cacheFetchRequest(request, cache, { clientId }).catch(error => undefined);
   try {
     let response = await cache.match(request);
-    //console.log(await cache.keys());
     if (typeof response === "undefined") { response = await fetchResponse; }
     if (typeof response === "undefined") { throw "cache-failed"; }
     return response;
   } catch (error) {
-    throw "cache-failed";
+    throw `cache-failed: ${error}`;
   }
 };
 
@@ -51,7 +95,7 @@ async function fetchRequest(event) {
   try {
     response = /\.json(\?|$)/.test(event.request.url)
       ? await networkFirst(event.request)
-      : await cacheFirst(event.request);
+      : await cacheFirst(event);
   } catch (error) {
     response = fetchOfflineFile(event);
   }

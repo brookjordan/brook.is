@@ -1,4 +1,8 @@
 export function addInstallPWAModal(beforeInstallPromptEvent) {
+  if (+localStorage.getItem("pwa-request-prompt-last-interaction") > (new Date()).getTime() - 24 * 60 * 60 * 1000) {
+    return;
+  }
+
   let promptModal = document.createElement('div');
   promptModal.style.cssText = `
     position: fixed;
@@ -37,16 +41,21 @@ export function addInstallPWAModal(beforeInstallPromptEvent) {
         color: #999;
       "
     >
-      No thanks.
+      Eer… no
     </button>
   `;
 
-  let killPrompt = () => { document.body.removeChild(promptModal); };
-  promptModal.querySelector('.install-pwa-decline').addEventListener('click', killPrompt);
-  promptModal.querySelector('.install-pwa-accept')
-    .addEventListener('click', () => {
+  let killPrompt = () => {
+    localStorage.setItem("pwa-request-prompt-last-interaction", (new Date()).getTime());
+    debugger;
+    document.body.removeChild(promptModal);
+  };
+  promptModal.querySelector(".install-pwa-decline").addEventListener("click", killPrompt);
+  promptModal.querySelector(".install-pwa-accept")
+    .addEventListener("click", () => {
       killPrompt();
       beforeInstallPromptEvent.prompt();
     });
+
   document.body.appendChild(promptModal);
 }

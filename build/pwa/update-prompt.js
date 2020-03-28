@@ -1,9 +1,5 @@
-export function addInstallPWAModal(beforeInstallPromptEvent) {
-  if (+localStorage.getItem("pwa-request-prompt-last-interaction") > (new Date()).getTime() - 24 * 60 * 60 * 1000) {
-    return;
-  }
-
-  let promptModal = document.createElement('div');
+export function addUpdateModal() {
+  let promptModal = document.createElement("div");
   promptModal.style.cssText = `
     position: fixed;
     bottom: 20px;
@@ -16,45 +12,55 @@ export function addInstallPWAModal(beforeInstallPromptEvent) {
     filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2));
     border-radius: 3px;
     display: flex;
+    flex-wrap: wrap;
   `;
   promptModal.innerHTML = `
+    <p
+      style="
+        flex-basis: 100%;
+        margin: 0;
+        margin-bottom: 10px;
+      "
+    >
+      There’s been an update.
+      <br>Please refresh for best results.
+    </p>
+
     <button
-      class="install-pwa-accept"
+      class="reload-page"
       type="button"
       style="
         width: 100%;
         font-size: 1.5em;
         border-radius: 3px;
+        flex-basis: 0;
+        flex-grow: 1;
       "
     >
-      Add to my home&nbsp;screen
+      Refresh
     </button>
 
     <button
-      class="install-pwa-decline"
+      class="do-nothing"
       type="button"
       style="
         width: 100%;
         font-size: 1.5em;
         border-radius: 3px;
         margin-left: 0.5em;
-        color: #999;
+        flex-basis: 0;
+        flex-grow: 1;
       "
     >
-      Eer… no
+      Maybe later.
     </button>
   `;
 
-  let killPrompt = () => {
-    localStorage.setItem("pwa-request-prompt-last-interaction", (new Date()).getTime());
-    debugger;
-    document.body.removeChild(promptModal);
-  };
-  promptModal.querySelector(".install-pwa-decline").addEventListener("click", killPrompt);
-  promptModal.querySelector(".install-pwa-accept")
+  let killPrompt = () => { document.body.removeChild(promptModal); };
+  promptModal.querySelector(".do-nothing").addEventListener("click", killPrompt);
+  promptModal.querySelector(".reload-page")
     .addEventListener("click", () => {
-      killPrompt();
-      beforeInstallPromptEvent.prompt();
+      location.reload();
     });
 
   document.body.appendChild(promptModal);

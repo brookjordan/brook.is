@@ -153,6 +153,8 @@
   "/__jpegs/so-impressed.jpg",
   "/suave/",
   "/__jpegs/suave.jpg",
+  "/testing-for-purity/",
+  "/__jpegs/testing-for-purity.jpg",
   "/thankful/",
   "/__jpegs/thankful.jpg",
   "/thinking/",

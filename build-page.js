@@ -140,6 +140,7 @@ async function buildMov() {
         }
         movieBuilder(gifPath)
           .withNoAudio()
+          // .toFormat("mp4")
           .videoCodec("mpeg4") // libx264
           .output(videoPath)
           .on("end", end => {
@@ -161,6 +162,8 @@ async function buildMov() {
         movieBuilder(gifPath)
           .withNoAudio()
           .output(videoPath)
+          // .toFormat("webm")
+          // .videoCodec("vp9") // libvpx
           .on("end", end => {
             resolve(end);
           })
@@ -197,6 +200,7 @@ async function buildMovSmall() {
         movieBuilder(gifPath)
           .withNoAudio()
           .videoBitrate("16")
+          // .toFormat("mp4")
           .videoCodec("mpeg4") // libx264
           .withSize("?x150")
           .output(videoPath)
@@ -220,7 +224,7 @@ async function buildMovSmall() {
           .withNoAudio()
           .videoBitrate("32")
           // .toFormat("webm")
-          // .videoCodec("libvpx")
+          // .videoCodec("vp9") // libvpx
           .withSize("?x150")
           .output(videoPath)
           .on("end", end => {

@@ -5,14 +5,18 @@ const BASE_URL = process.env.BASE_URL || "https://brook.is";
 Object.defineProperties(String.prototype, {
   sentenceCased: {
     get() {
-      if (this.length === 0) { return this.toString(); }
+      if (this.length === 0) {
+        return this.toString();
+      }
       return `${this.slice(0,1).toUpperCase()}${this.slice(1)}`;
     },
   },
 
   humanised: {
     get() {
-      if (this.length === 0) { return this.toString(); }
+      if (this.length === 0) {
+        return this.toString();
+      }
       return this.replace(/-/g, " ");
     },
   },
@@ -64,7 +68,11 @@ function exists(path) {
 }
 
 let minImageSize = 200;
-function getLegalSize({ width, height } = {}) {
+
+function getLegalSize({
+  width,
+  height,
+} = {}) {
   let neededResize = false;
   if (width < minImageSize) {
     height = height * minImageSize / width;
@@ -76,7 +84,11 @@ function getLegalSize({ width, height } = {}) {
     height = 200;
     neededResize = true;
   }
-  return { width, height, neededResize };
+  return {
+    width,
+    height,
+    neededResize,
+  };
 }
 
 async function buildJpeg() {
@@ -121,33 +133,40 @@ async function buildMov() {
     return Promise.all([
       new Promise(async (resolve, reject) => {
         let videoPath = `${MOVIE_PATH}.mp4`;
-        if (await exists(videoPath))
-        { console.log(`${EMOTION} mp4 exists. Skipping creation.`);
+        if (await exists(videoPath)) {
+          console.log(`${EMOTION} mp4 exists. Skipping creation.`);
           resolve(true);
           return;
         }
         movieBuilder(gifPath)
           .withNoAudio()
-          .toFormat("mp4")
-          .videoCodec("libx264") // openh264
+          .videoCodec("mpeg4") // libx264
           .output(videoPath)
-          .on("end", end => { resolve(end); })
-          .on("error", error => { reject(error); })
+          .on("end", end => {
+            resolve(end);
+          })
+          .on("error", error => {
+            reject(error);
+          })
           .run();
       }),
 
       new Promise(async (resolve, reject) => {
         let videoPath = `${MOVIE_PATH}.webm`;
-        if (await exists(videoPath))
-        { console.log(`${EMOTION} webm exists. Skipping creation.`);
+        if (await exists(videoPath)) {
+          console.log(`${EMOTION} webm exists. Skipping creation.`);
           resolve(true);
           return;
         }
         movieBuilder(gifPath)
           .withNoAudio()
           .output(videoPath)
-          .on("end", end => { resolve(end); })
-          .on("error", error => { reject(error); })
+          .on("end", end => {
+            resolve(end);
+          })
+          .on("error", error => {
+            reject(error);
+          })
           .run();
       }),
     ]);
@@ -178,12 +197,15 @@ async function buildMovSmall() {
         movieBuilder(gifPath)
           .withNoAudio()
           .videoBitrate("16")
-          .toFormat("mp4")
-          .videoCodec("libx264") // openh264
+          .videoCodec("mpeg4") // libx264
           .withSize("?x150")
           .output(videoPath)
-          .on("end", end => { resolve(end); })
-          .on("error", error => { reject(error); })
+          .on("end", end => {
+            resolve(end);
+          })
+          .on("error", error => {
+            reject(error);
+          })
           .run();
       }),
 
@@ -201,8 +223,12 @@ async function buildMovSmall() {
           // .videoCodec("libvpx")
           .withSize("?x150")
           .output(videoPath)
-          .on("end", end => { resolve(end); })
-          .on("error", error => { reject(error); })
+          .on("end", end => {
+            resolve(end);
+          })
+          .on("error", error => {
+            reject(error);
+          })
           .run();
       }),
     ]);
@@ -223,7 +249,10 @@ function getImageSize(imagePath) {
   });
 }
 async function buildOembedJSON(EMOTION) {
-  const { width, height } = await jpegBuildPromise;
+  const {
+    width,
+    height
+  } = await jpegBuildPromise;
   return JSON.stringify({
     width,
     height,
@@ -240,7 +269,10 @@ async function buildOembedJSON(EMOTION) {
 }
 
 async function buildMetaTags(EMOTION) {
-  const { width, height } = await jpegBuildPromise;
+  const {
+    width,
+    height
+  } = await jpegBuildPromise;
   return `
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -520,7 +552,7 @@ async function buildPageHTML(EMOTION) {
 </html>`;
 }
 
-(async function() {
+(async function () {
   if (!await exists(DIR_PATH)) {
     await mkdir(DIR_PATH);
   }
@@ -531,9 +563,11 @@ async function buildPageHTML(EMOTION) {
       buildMovSmall(),
       buildMov(),
 
-      (async function() {
+      (async function () {
         let indexFilePath = path.join(DIR_PATH, "index.html");
-        if(await exists(indexFilePath)) { return; }
+        if (await exists(indexFilePath)) {
+          return;
+        }
         try {
           let pageHTML = minifyHTML(await buildPageHTML(EMOTION), {
             collapseWhitespace: true,
@@ -548,8 +582,10 @@ async function buildPageHTML(EMOTION) {
       })(),
 
       buildOembedJSON(EMOTION)
-        .then(pageOembedJSON => writeFile(path.join(DIR_PATH, "oembed.json"), pageOembedJSON))
-        .catch(error => { console.log(`OEmbed build error:\n${error}`); }),
+      .then(pageOembedJSON => writeFile(path.join(DIR_PATH, "oembed.json"), pageOembedJSON))
+      .catch(error => {
+        console.log(`OEmbed build error:\n${error}`);
+      }),
     ]);
   } catch (error) {
     console.log(`Error build assets for ${EMOTION}\n${error}`)

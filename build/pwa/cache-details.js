@@ -1,5 +1,6 @@
-const cacheName = "brook-is-v1";
-const staticAssets = [
+
+    const cacheName = "brook-is-v1";
+    const staticAssets = [
   "/",
   "/index.html",
   "/favicon.ico",
@@ -98,6 +99,8 @@ const staticAssets = [
   "/__jpegs/in-awe.jpg",
   "/in-complete-control/",
   "/__jpegs/in-complete-control.jpg",
+  "/in-disagreement/",
+  "/__jpegs/in-disagreement.jpg",
   "/in-disbelief/",
   "/__jpegs/in-disbelief.jpg",
   "/in-love/",
@@ -186,6 +189,8 @@ const staticAssets = [
   "/__jpegs/sad.jpg",
   "/saluting/",
   "/__jpegs/saluting.jpg",
+  "/scared/",
+  "/__jpegs/scared.jpg",
   "/seeing-nothing/",
   "/__jpegs/seeing-nothing.jpg",
   "/sleepy/",
@@ -235,5 +240,6 @@ const staticAssets = [
   "/working-hard/",
   "/__jpegs/working-hard.jpg",
   "/worried/",
-  "/__jpegs/worried.jpg",
+  "/__jpegs/worried.jpg"
 ];
+  

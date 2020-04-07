@@ -92,6 +92,14 @@ function getLegalSize({ width, height } = {}) {
   };
 }
 
+const jimpGifPromise = jimp.read(GIF_SRC_PATH);
+async function getGifSize() {
+  let gifImage = await jimpGifPromise;
+  return {
+    width: gifImage.bitmap.width,
+    height: gifImage.bitmap.height,
+  };
+}
 async function buildJpeg() {
   try {
     if (await exists(JPEG_PATH)) {
@@ -100,7 +108,7 @@ async function buildJpeg() {
     if (!(await exists(JPEG_FOLDER_PATH))) {
       await mkdir(JPEG_FOLDER_PATH);
     }
-    let gifImage = await jimp.read(GIF_SRC_PATH);
+    let gifImage = await jimpGifPromise;
     let requiredSize = getLegalSize({
       width: gifImage.bitmap.width,
       height: gifImage.bitmap.height,
@@ -274,7 +282,14 @@ async function buildOembedJSON(EMOTION) {
 }
 
 async function buildMetaTags(EMOTION) {
-  const { width, height } = await jpegBuildPromise;
+  const promiseValues = [
+    { width: jpegWidth, height: jpegHeight },
+    { width: gifWidth, height: gifHeight },
+  ] = await Promise.all([
+    jpegBuildPromise,
+    getGifSize(),
+  ]);
+
   return `
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -312,38 +327,21 @@ async function buildMetaTags(EMOTION) {
     itemprop="image"
     property="og:image"
     content="${BASE_URL}${GIF_URL}"/>
-  <meta
-    property="og:image:secure_url"
-    content="${BASE_URL}${GIF_URL}"/>
+  ${
+    ""
+    // <meta
+    //   property="og:image:secure_url"
+    //   content="${BASE_URL}${GIF_URL}"/>
+  }
   <meta
     property="og:image:type"
     content="image/gif"/>
   <meta
     property="og:image:width"
-    content="${width}"/>
+    content="${gifWidth}"/>
   <meta
     property="og:image:height"
-    content="${height}"/>
-  <meta
-    property="og:image:alt"
-    content="Brook is ${EMOTION.humanised}"/>
-
-  <meta
-    itemprop="image"
-    property="og:image"
-    content="${BASE_URL}${JPEG_URL}"/>
-  <meta
-    property="og:image:secure_url"
-    content="${BASE_URL}${JPEG_URL}"/>
-  <meta
-    property="og:image:type"
-    content="image/jpeg"/>
-  <meta
-    property="og:image:width"
-    content="${width}"/>
-  <meta
-    property="og:image:height"
-    content="${height}"/>
+    content="${gifHeight}"/>
   <meta
     property="og:image:alt"
     content="Brook is ${EMOTION.humanised}"/>
@@ -360,27 +358,10 @@ async function buildMetaTags(EMOTION) {
     content="video/mp4"/>
   <meta
     property="og:video:width"
-    content="${width}"/>
+    content="${gifWidth}"/>
   <meta
     property="og:video:height"
-    content="${height}"/>
-
-  <meta
-    itemprop="video"
-    property="og:video"
-    content="${BASE_URL}${GIF_URL}"/>
-  <meta
-    property="og:video:secure_url"
-    content="${BASE_URL}${GIF_URL}"/>
-  <meta
-    property="og:video:type"
-    content="image/gif"/>
-  <meta
-    property="og:video:width"
-    content="${width}"/>
-  <meta
-    property="og:video:height"
-    content="${height}"/>
+    content="${gifHeight}"/>
 
   <link
     rel="alternate"
@@ -390,15 +371,35 @@ async function buildMetaTags(EMOTION) {
   />
 
   <script type="application/ld+json">${JSON.stringify({
-    "@context": "https://schema.org/",
-    "@type": "ImageObject",
-    encodingFormat: "image/gif",
-    url: `${BASE_URL}${GIF_URL}`,
-    contentUrl: `${BASE_URL}${GIF_URL}`,
-    height,
-    width,
-    caption: `Brook is ${EMOTION.humanised}`,
-    representativeOfPage: true,
+    "@context": "http://schema.org",
+    "@type": "Article",
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `https://brook.is/${EMOTION}`
+    },
+    headline: `Brook is ${EMOTION.humanised}`,
+    image: {
+      "@type": "ImageObject",
+      url: `${BASE_URL}${GIF_URL}`,
+      contentUrl: `${BASE_URL}${GIF_URL}`,
+      encodingFormat: "image/gif",
+      caption: `Brook is ${EMOTION.humanised}`,
+      height: gifHeight,
+      width: gifWidth,
+      representativeOfPage: true,
+    },
+    datePublished: new Date().toISOString(),
+    publisher: {
+        "@type": "Person",
+        name: "Brook Jordan",
+        email: "brook@brook.dev",
+        // logo: {
+        //     "@type": "ImageObject",
+        //     url: "https://giphy.com/static/img/giphy_logo_square_social.png",
+        //     width: "300",
+        //     height: "300"
+        // }
+    }
   })}</script>`;
 }
 

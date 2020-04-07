@@ -219,6 +219,8 @@
   "/__jpegs/totes-fine.jpg",
   "/trying-his-best/",
   "/__jpegs/trying-his-best.jpg",
+  "/unable-to-avert-their-gaze-from-your-beauty/",
+  "/__jpegs/unable-to-avert-their-gaze-from-your-beauty.jpg",
   "/uncomfortable/",
   "/__jpegs/uncomfortable.jpg",
   "/unconvinced/",

@@ -269,7 +269,7 @@ async function buildOembedJSON(EMOTION) {
   return JSON.stringify({
     width,
     height,
-    url: GIF_URL,
+    url: `${BASE_URL}${GIF_URL}`,
 
     version: "1.0",
     type: "photo",

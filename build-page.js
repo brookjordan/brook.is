@@ -26,6 +26,7 @@ const promisify = require("util").promisify;
 const fs = require("fs");
 const path = require("path");
 const imageSize = require("image-size");
+const gifResize = require('@gumlet/gif-resize');
 const movieBuilder = require("fluent-ffmpeg");
 var minifyHTML = require("html-minifier").minify;
 if (process.env.FFMPEG_BINARY) {
@@ -34,6 +35,8 @@ if (process.env.FFMPEG_BINARY) {
 const mkdir = promisify(fs.mkdir);
 const stat = promisify(fs.stat);
 const writeFile = promisify(fs.writeFile);
+const readFile = promisify(fs.readFile);
+const copyFile = promisify(fs.copyFile);
 const jimp = require("jimp");
 const getImageColors = require("get-image-colors");
 const dominantColors = (path) =>
@@ -42,10 +45,12 @@ const dominantColors = (path) =>
 const SRC_FOLDER = path.join(__dirname, "build");
 const BUILD_FOLDER = path.join(__dirname, "build");
 const GIF_BIG_FOLDER_NAME = "__original-gifs";
+const GIF_SMALL_FOLDER_NAME = "__small-gifs";
 const GIF_FOLDER_PATH = path.join(BUILD_FOLDER, GIF_FOLDER_NAME);
 const GIF_SRC_FOLDER_PATH = path.join(SRC_FOLDER, GIF_FOLDER_NAME);
 const GIF_BIG_FOLDER_PATH = path.join(BUILD_FOLDER, GIF_BIG_FOLDER_NAME);
 const GIF_SRC_BIG_FOLDER_PATH = path.join(SRC_FOLDER, GIF_BIG_FOLDER_NAME);
+const GIF_SMALL_FOLDER_PATH = path.join(BUILD_FOLDER, GIF_SMALL_FOLDER_NAME);
 const JPEG_FOLDER_NAME = "__jpegs";
 const JPEG_FOLDER_PATH = path.join(BUILD_FOLDER, JPEG_FOLDER_NAME);
 const MOVIE_FOLDER_NAME = "__movs";
@@ -58,12 +63,14 @@ const MOVIE_SMALL_FOLDER_PATH = path.join(
 
 const GIF_BIG_PATH = path.join(GIF_BIG_FOLDER_PATH, `${EMOTION}.gif`);
 const GIF_PATH = path.join(GIF_FOLDER_PATH, `${EMOTION}.gif`);
+const GIF_SMALL_PATH = path.join(GIF_SMALL_FOLDER_PATH, `${EMOTION}.gif`);
 const GIF_SRC_PATH = path.join(GIF_SRC_FOLDER_PATH, `${EMOTION}.gif`);
 const JPEG_PATH = path.join(JPEG_FOLDER_PATH, `${EMOTION}.jpg`);
 const MOVIE_PATH = path.join(MOVIE_FOLDER_PATH, `${EMOTION}`);
 const MOVIE_SMALL_PATH = path.join(MOVIE_SMALL_FOLDER_PATH, `${EMOTION}`);
 const DIR_PATH = path.join(BUILD_FOLDER, EMOTION);
 const GIF_URL = `/${GIF_FOLDER_NAME}/${EMOTION}.gif`;
+const GIF_SMALL_URL = `/${GIF_SMALL_FOLDER_NAME}/${EMOTION}.gif`;
 const JPEG_URL = `/${JPEG_FOLDER_NAME}/${EMOTION}.jpg`;
 const MOVIE_URL = `/${MOVIE_FOLDER_NAME}/${EMOTION}`;
 
@@ -92,6 +99,32 @@ function getLegalSize({ width, height } = {}) {
   };
 }
 
+function getMinTwitterSize({ width, height } = {}) {
+  let minWidth = 280;
+  let minHeight = 150;
+  let neededResize = false;
+  let requiredAspectRatio = minWidth / minHeight;
+  let aspectRatio = width / height;
+  let newHeight = height;
+  let newWidth = width;
+
+  if (aspectRatio >= requiredAspectRatio) {
+    newWidth = width * (minHeight / height);
+    newHeight = minHeight;
+  } else {
+    newHeight = height * (minWidth / width);
+    newWidth = minWidth;
+  }
+  if (newHeight !== height || newWidth !== width) {
+    neededResize = true;
+  }
+  return {
+    width: newWidth,
+    height: newHeight,
+    neededResize,
+  };
+}
+
 const jimpGifPromise = jimp.read(GIF_SRC_PATH);
 async function getGifSize() {
   let gifImage = await jimpGifPromise;
@@ -103,6 +136,7 @@ async function getGifSize() {
 async function buildJpeg() {
   try {
     if (await exists(JPEG_PATH)) {
+      console.log(`${EMOTION} jpeg exists. Skipping creation.`);
       return await getImageSize(JPEG_PATH);
     }
     if (!(await exists(JPEG_FOLDER_PATH))) {
@@ -130,6 +164,48 @@ async function buildJpeg() {
 }
 // this is used in multiple places so let’s cache it
 const jpegBuildPromise = buildJpeg();
+
+async function buildSmallGif() {
+  try {
+    if (await exists(GIF_SMALL_PATH)) {
+      console.log(`${EMOTION} small gif exists. Skipping creation.`);
+      return await getImageSize(GIF_SMALL_PATH);
+    }
+    if (!(await exists(GIF_SMALL_FOLDER_PATH))) {
+      await mkdir(GIF_SMALL_FOLDER_PATH);
+    }
+    let gifPath = GIF_BIG_PATH;
+    if (!(await exists(gifPath))) {
+      gifPath = GIF_PATH;
+    }
+    let [gifBuffer, gifImage] = await Promise.all([
+      readFile(gifPath),
+      jimpGifPromise,
+    ]);
+    let requiredSize = getMinTwitterSize({
+      width: gifImage.bitmap.width,
+      height: gifImage.bitmap.height,
+    });
+    if (requiredSize.neededResize) {
+      let resizedGif = await gifResize({
+        width: Math.ceil(requiredSize.width),
+        height: Math.ceil(requiredSize.height),
+        optimizationLevel: 3,
+        colors: 64,
+        resize_method: "lanczos3",
+      })(gifBuffer);
+      await writeFile(GIF_SMALL_PATH, resizedGif);
+    } else {
+      await copyFile(GIF_PATH, GIF_SMALL_PATH);
+    }
+    return {
+      width: gifImage.bitmap.width,
+      height: gifImage.bitmap.height,
+    };
+  } catch (error) {
+    console.log(`JPEG build error:\n${error}`);
+  }
+}
 
 async function buildMov() {
   try {
@@ -302,7 +378,7 @@ async function buildMetaTags(EMOTION) {
   <meta name="twitter:creator" content="brook@brook.is">
   <meta name="twitter:title" content="${EMOTION.humanised.sentenceCased}">
   <meta name="twitter:description" content="Brook is ${EMOTION.humanised}">
-  <meta name="twitter:image" content="${BASE_URL}${GIF_URL}">
+  <meta name="twitter:image" content="${BASE_URL}${GIF_SMALL_URL}">
   <meta name="twitter:image:alt" content="${EMOTION.humanised.sentenceCased}">
 
   <meta
@@ -588,6 +664,7 @@ async function buildPageHTML(EMOTION) {
       jpegBuildPromise,
       buildMovSmall(),
       buildMov(),
+      buildSmallGif(),
 
       (async function () {
         let indexFilePath = path.join(DIR_PATH, "index.html");

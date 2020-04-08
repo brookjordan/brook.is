@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/brookjordan/brook.is#readme",
   "devDependencies": {
+    "@gumlet/gif-resize": "^1.0.7",
     "fluent-ffmpeg": "^2.1.2",
     "get-image-colors": "^2.0.0",
     "html-minifier": "^4.0.0",

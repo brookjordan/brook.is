@@ -297,9 +297,13 @@ async function buildMetaTags(EMOTION) {
   <title>${EMOTION.humanised.sentenceCased}</title>
   <meta name="description" content="Brook is ${EMOTION.humanised}">
 
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:site" content="brook.is" />
-  <meta name="twitter:creator" content="brook.dev" />
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="brook.is">
+  <meta name="twitter:creator" content="brook@brook.is">
+  <meta name="twitter:title" content="${EMOTION.humanised.sentenceCased}">
+  <meta name="twitter:description" content="Brook is ${EMOTION.humanised}">
+  <meta name="twitter:image" content="${BASE_URL}${GIF_URL}">
+  <meta name="twitter:image:alt" content="${EMOTION.humanised.sentenceCased}">
 
   <meta
     property="fb:app_id"

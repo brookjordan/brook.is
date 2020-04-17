@@ -185,7 +185,7 @@ const writeFile = promisify(fs.writeFile);
         `,
       ).join("</li><li>")}</li></ul>
 
-      <script async src="data:application/japascript;base64,${Buffer.from(
+      <script async src="data:application/javascript;base64,${Buffer.from(
         `
         [...document.querySelectorAll("[data-emotion]")].forEach(link => {
           link.parentNode.addEventListener("mouseenter", () => {

@@ -619,7 +619,7 @@ async function buildPageHTML(EMOTION) {
       <link itemprop="url" href="${JPEG_URL}">
     </span>
 
-    <script async src="data:application/japascript;base64,${Buffer.from(
+    <script async src="data:application/javascript;base64,${Buffer.from(
       `
       let shareButton = document.createElement("button");
       shareButton.classList.add("share-button");

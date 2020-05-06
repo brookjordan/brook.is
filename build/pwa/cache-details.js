@@ -139,6 +139,8 @@
   "/__jpegs/not-bothered.jpg",
   "/not-comfortable-with-this/",
   "/__jpegs/not-comfortable-with-this.jpg",
+  "/not-convinced/",
+  "/__jpegs/not-convinced.jpg",
   "/not-happy-to-be-awake/",
   "/__jpegs/not-happy-to-be-awake.jpg",
   "/not-sure-if-that-was-good/",

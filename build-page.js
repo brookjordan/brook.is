@@ -72,7 +72,8 @@ const DIR_PATH = path.join(BUILD_FOLDER, EMOTION);
 const GIF_URL = `/${GIF_FOLDER_NAME}/${EMOTION}.gif`;
 const GIF_SMALL_URL = `/${GIF_SMALL_FOLDER_NAME}/${EMOTION}.gif`;
 const JPEG_URL = `/${JPEG_FOLDER_NAME}/${EMOTION}.jpg`;
-const MOVIE_URL = `/${MOVIE_FOLDER_NAME}/${EMOTION}`;
+const MOVIE_URL = `/${MOVIE_FOLDER_NAME}/${EMOTION}.mp4`;
+const MOVIE_SMALL_URL = `/${MOVIE_SMALL_FOLDER_NAME}/${EMOTION}.mp4`;
 
 function exists(path) {
   return stat(path).catch(() => false);
@@ -403,28 +404,29 @@ async function buildMetaTags(EMOTION) {
     property="og:updated_time"
     content="${new Date().toISOString()}"/>
 
-  <meta
-    itemprop="image"
-    property="og:image"
-    content="${BASE_URL}${GIF_URL}"/>
   ${
     ""
     // <meta
+    //   itemprop="image"
+    //   property="og:image"
+    //   content="${BASE_URL}${GIF_URL}"/>
+
+    // <meta
     //   property="og:image:secure_url"
     //   content="${BASE_URL}${GIF_URL}"/>
+    // <meta
+    //   property="og:image:type"
+    //   content="image/gif"/>
+    // <meta
+    //   property="og:image:width"
+    //   content="${gifWidth}"/>
+    // <meta
+    //   property="og:image:height"
+    //   content="${gifHeight}"/>
+    // <meta
+    //   property="og:image:alt"
+    //   content="Brook is ${EMOTION.humanised}"/>
   }
-  <meta
-    property="og:image:type"
-    content="image/gif"/>
-  <meta
-    property="og:image:width"
-    content="${gifWidth}"/>
-  <meta
-    property="og:image:height"
-    content="${gifHeight}"/>
-  <meta
-    property="og:image:alt"
-    content="Brook is ${EMOTION.humanised}"/>
 
   <meta
     itemprop="image"
@@ -446,10 +448,10 @@ async function buildMetaTags(EMOTION) {
   <meta
     itemprop="video"
     property="og:video"
-    content="${BASE_URL}${MOVIE_URL}"/>
+    content="${BASE_URL}${MOVIE_SMALL_URL}"/>
   <meta
     property="og:video:secure_url"
-    content="${BASE_URL}${MOVIE_URL}"/>
+    content="${BASE_URL}${MOVIE_SMALL_URL}"/>
   <meta
     property="og:video:type"
     content="video/mp4"/>

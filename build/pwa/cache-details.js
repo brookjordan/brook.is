@@ -131,6 +131,8 @@
   "/__jpegs/lovable.jpg",
   "/missing-you/",
   "/__jpegs/missing-you.jpg",
+  "/moving-house/",
+  "/__jpegs/moving-house.jpg",
   "/naked/",
   "/__jpegs/naked.jpg",
   "/not-amused/",

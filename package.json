@@ -5,8 +5,8 @@
   "main": "build-site.js",
   "scripts": {
     "dev": "BASE_URL=http://localhost:5500 node build-site.js",
-    "build-index": "BASE_URL=http://localhost:5500 ONLY_INDEX=true node build-site.js",
-    "prod": "BASE_URL=https://brook.is node build-site.js",
+    "build-index": "BASE_URL=https://brook.is ONLY_INDEX=true node build-site.js",
+    "build": "BASE_URL=https://brook.is node build-site.js",
     "lint:styles": "prettier --write \"{src/**/*.js,*.js}\""
   },
   "repository": {

@@ -427,6 +427,23 @@ async function buildMetaTags(EMOTION) {
     content="Brook is ${EMOTION.humanised}"/>
 
   <meta
+    itemprop="image"
+    property="og:image"
+    content="${BASE_URL}${JPEG_URL}"/>
+  <meta
+    property="og:image:type"
+    content="image/jpeg"/>
+  <meta
+    property="og:image:width"
+    content="${gifWidth}"/>
+  <meta
+    property="og:image:height"
+    content="${gifHeight}"/>
+  <meta
+    property="og:image:alt"
+    content="Brook is ${EMOTION.humanised}"/>
+
+  <meta
     itemprop="video"
     property="og:video"
     content="${BASE_URL}${MOVIE_URL}"/>

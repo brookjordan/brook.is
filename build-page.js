@@ -26,7 +26,7 @@ const promisify = require("util").promisify;
 const fs = require("fs");
 const path = require("path");
 const imageSize = require("image-size");
-const gifResize = require('@gumlet/gif-resize');
+const gifResize = require("@gumlet/gif-resize");
 const movieBuilder = require("fluent-ffmpeg");
 var minifyHTML = require("html-minifier").minify;
 if (process.env.FFMPEG_BINARY) {
@@ -221,6 +221,27 @@ async function buildMov() {
     }
     return Promise.all([
       new Promise(async (resolve, reject) => {
+        let videoPath = `${MOVIE_PATH}.av1.mp4`;
+        if (await exists(videoPath)) {
+          console.log(`${EMOTION} av1 exists. Skipping creation.`);
+          resolve(true);
+          return;
+        }
+        movieBuilder(gifPath)
+          .withNoAudio()
+          .videoCodec("libsvtav1")
+          .outputOptions(["-crf", "40", "-preset", "3"])
+          .output(videoPath)
+          .on("end", (end) => {
+            resolve(end);
+          })
+          .on("error", (error) => {
+            reject(error);
+          })
+          .run();
+      }),
+
+      new Promise(async (resolve, reject) => {
         let videoPath = `${MOVIE_PATH}.mp4`;
         if (await exists(videoPath)) {
           console.log(`${EMOTION} mp4 exists. Skipping creation.`);
@@ -279,6 +300,27 @@ async function buildMovSmall() {
       gifPath = GIF_PATH;
     }
     return Promise.all([
+      new Promise(async (resolve, reject) => {
+        let videoPath = `${MOVIE_SMALL_PATH}.av1.mp4`;
+        if (await exists(videoPath)) {
+          console.log(`${EMOTION} small av1 exists. Skipping creation.`);
+          resolve(true);
+          return;
+        }
+        movieBuilder(gifPath)
+          .withNoAudio()
+          .videoCodec("libsvtav1")
+          .outputOptions(["-crf", "40", "-preset", "3", "-vf", "scale=-2:150"])
+          .output(videoPath)
+          .on("end", (end) => {
+            resolve(end);
+          })
+          .on("error", (error) => {
+            reject(error);
+          })
+          .run();
+      }),
+
       new Promise(async (resolve, reject) => {
         let videoPath = `${MOVIE_SMALL_PATH}.mp4`;
         if (await exists(videoPath)) {
@@ -359,13 +401,10 @@ async function buildOembedJSON(EMOTION) {
 }
 
 async function buildMetaTags(EMOTION) {
-  const promiseValues = [
+  const promiseValues = ([
     { width: jpegWidth, height: jpegHeight },
     { width: gifWidth, height: gifHeight },
-  ] = await Promise.all([
-    jpegBuildPromise,
-    getGifSize(),
-  ]);
+  ] = await Promise.all([jpegBuildPromise, getGifSize()]));
 
   return `
   <meta charset="UTF-8">
@@ -474,7 +513,7 @@ async function buildMetaTags(EMOTION) {
     "@type": "Article",
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `https://brook.is/${EMOTION}`
+      "@id": `https://brook.is/${EMOTION}`,
     },
     headline: `Brook is ${EMOTION.humanised}`,
     image: {
@@ -489,16 +528,16 @@ async function buildMetaTags(EMOTION) {
     },
     datePublished: new Date().toISOString(),
     publisher: {
-        "@type": "Person",
-        name: "Brook Jordan",
-        email: "brook@brook.dev",
-        // logo: {
-        //     "@type": "ImageObject",
-        //     url: "https://giphy.com/static/img/giphy_logo_square_social.png",
-        //     width: "300",
-        //     height: "300"
-        // }
-    }
+      "@type": "Person",
+      name: "Brook Jordan",
+      email: "brook@brook.dev",
+      // logo: {
+      //     "@type": "ImageObject",
+      //     url: "https://giphy.com/static/img/giphy_logo_square_social.png",
+      //     width: "300",
+      //     height: "300"
+      // }
+    },
   })}</script>`;
 }
 

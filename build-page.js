@@ -662,6 +662,9 @@ async function buildPageHTML(EMOTION) {
       alt="Brook is ${EMOTION.humanised}"
     >
       <source
+        src="${MOVIE_URL}.av1.mp4"
+        type="video/mp4; codecs=av01.0.05M.08">
+      <source
         src="${MOVIE_URL}.webm"
         type="video/webm">
       <source
